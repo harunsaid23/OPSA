@@ -1,0 +1,288 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Card from "@/components/item/Card.astro";
+import Tabs from "@/components/interactive/Tabs.astro";
+import TabLink from "@/components/interactive/TabLink.astro";
+import Accordion from "@/components/interactive/Accordion.astro";
+import AccordionItem from "@/components/interactive/AccordionItem.astro";
+import HeroSignal from "@/components/content/HeroSignal.astro";
+import PriorityList from "@/components/content/PriorityList.astro";
+import MembershipForm from "@/components/content/MembershipForm.astro";
+const foundingMembers = [
+  { heading: "Founding Member Name", text: "Founding Chair" },
+  { heading: "Executive Leadership Name", text: "Vice-Chair" },
+  { heading: "Team Member Name", text: "Secretary" },
+  { heading: "Board Member Name", text: "Treasurer" },
+  { heading: "Clinical Leader Name", text: "Clinical Advocacy Lead" },
+  { heading: "Committee Member Name", text: "Membership Lead" },
+  { heading: "Community Partner Name", text: "Community Engagement Lead" },
+  { heading: "Placeholder Name", text: "Education Lead" },
+];
+const mandate = [
+  {
+    heading: "Led by specialists and patients",
+    symbol: "people" as const,
+    text: "Shaped by the people closest to pain care: the specialists who deliver it and the patients and caregivers who live with it.",
+  },
+  {
+    heading: "Care in the community",
+    symbol: "community" as const,
+    text: "We champion community-based pain care that helps keep patients out of emergency departments and relieves pressure on Ontario’s hospitals.",
+  },
+  {
+    heading: "Amplifying patient voices",
+    symbol: "voice" as const,
+    text: "We bring the experiences of everyday Ontarians living with pain to government, health organizations, hospitals and elected officials.",
+  },
+];
+const priorities = [
+  {
+    heading: "Build awareness",
+    text: "Raise awareness of pain care and its role in helping Ontarians return to work, family and community life.",
+  },
+  {
+    heading: "Bring lived experience to decisions",
+    text: "Amplify the voices and needs of everyday Ontarians living with pain, so their experiences inform government decisions.",
+  },
+  {
+    heading: "Champion care close to home",
+    text: "Champion community-based pain care that helps reduce pressure on Ontario’s emergency departments and hospitals.",
+  },
+  {
+    heading: "Recognize specialist care",
+    text: "Advocate for the recognition and fair valuing of pain specialists’ practices within Ontario’s health system.",
+  },
+  {
+    heading: "Connect the health system",
+    text: "Work with primary care, partner specialties, patient organizations and community partners to strengthen a connected system of pain care.",
+  },
+];
+const values = [
+  {
+    heading: "Patient voice",
+    text: "Centring the lived experience of patients and caregivers in everything we advocate for.",
+  },
+  {
+    heading: "Community",
+    text: "Reflecting the diversity of Ontario’s communities and regions, and the barriers they face in accessing pain care.",
+  },
+  {
+    heading: "Purpose",
+    text: "Recognizing the role of pain care in helping people live full, purposeful lives.",
+  },
+  {
+    heading: "System stewardship",
+    text: "Promoting care in the community and supporting a sustainable, publicly funded health system.",
+  },
+  {
+    heading: "Collaboration",
+    text: "Working constructively with government, health system partners and fellow professionals.",
+  },
+];
+---
+
+<Layout>
+  <!-- Hero -->
+  <Section id="top" theme="dark">
+    <ContentWrapper variant="columns">
+      <Eyebrow>Ontario Pain Specialist Association</Eyebrow>
+      <Heading tag="h1" class="heading-accent">
+        Pain care for
+        <br />
+        <strong>full, purposeful lives.</strong>
+      </Heading>
+      <Paragraph variant="large" maxWidth={46}>
+        Bringing Ontario’s pain specialists, patients and communities together.
+        Advocating for care that helps people return to what matters.
+      </Paragraph>
+      <ButtonWrapper>
+        <Button element="link" href="#join" variant="directional">
+          Become a founding member
+        </Button>
+        <Button element="link" href="#about" emphasis="secondary">
+          About OPSA
+        </Button>
+      </ButtonWrapper>
+      <HeroSignal slot="column2" />
+    </ContentWrapper>
+  </Section>
+  <!-- Mandate -->
+  <Section id="about" class="background-2" aria-labelledby="about-heading">
+    <ContentWrapper variant="columns">
+      <Eyebrow>Our mandate</Eyebrow>
+      <Heading id="about-heading" maxWidth={25}>
+        One provincial voice for pain care in Ontario.
+      </Heading>
+      <Paragraph slot="column2" variant="large" maxWidth={48}>
+        We advocate for the recognition and value of pain care across Ontario’s
+        communities, and for the role it plays in helping patients get back to
+        work, family and community life.
+      </Paragraph>
+    </ContentWrapper>
+    <Grid large={3}>
+      {mandate.map((item) => (
+        <Card variant="feature" {...item} />
+      ))}
+    </Grid>
+  </Section>
+  <!-- Mission -->
+  <Section id="pain-care" aria-labelledby="mission-heading">
+    <ContentWrapper variant="sticky-content">
+      <Eyebrow>Our mission</Eyebrow>
+      <Heading id="mission-heading">
+        Advocating for pain specialists and the Ontarians they care for.
+      </Heading>
+      <Paragraph>
+        OPSA is dedicated to advocating for the practices of pain specialists
+        and doctors across Ontario, and for the positive impact they have on the
+        lives of Ontarians.
+      </Paragraph>
+      <Paragraph>
+        We advocate on behalf of patients living with pain with the Government
+        of Ontario, health organizations, hospitals and elected officials.
+      </Paragraph>
+      <PriorityList
+        slot="column2"
+        items={priorities}
+        aria-label="Our advocacy priorities"
+      />
+    </ContentWrapper>
+  </Section>
+  <!-- Values -->
+  <Section theme="dark" aria-labelledby="values-heading">
+    <ContentWrapper>
+      <Eyebrow>What guides us</Eyebrow>
+      <Heading id="values-heading" maxWidth={24}>
+        Better care starts with what we stand for.
+      </Heading>
+      <Paragraph maxWidth={60}>
+        Five shared values. One commitment to the people closest to pain care.
+      </Paragraph>
+    </ContentWrapper>
+    <Tabs variant="side" id="values" aria-label="Our values">
+      <Fragment slot="links">
+        {values.map((item) => (
+          <TabLink>{item.heading}</TabLink>
+        ))}
+      </Fragment>
+      {values.map((item) => (
+        <Card
+          variant="statement"
+          theme="invert"
+          eyebrow="Our values"
+          {...item}
+        />
+      ))}
+    </Tabs>
+  </Section>
+  <!-- People -->
+  <Section
+    id="patient-voices"
+    class="background-2"
+    aria-labelledby="people-heading"
+  >
+    <ContentWrapper variant="columns">
+      <Eyebrow>Who we are</Eyebrow>
+      <Heading id="people-heading" maxWidth={18}>
+        Our founding members
+      </Heading>
+      <Paragraph slot="column2">
+        Pain specialist physicians and clinic leaders from practices across
+        Ontario, including community-based clinics serving equity-deserving and
+        underserved communities, are leading OPSA’s incorporation and first
+        membership drive.
+      </Paragraph>
+    </ContentWrapper>
+    <Grid small={2} large={4} role="list" aria-label="Founding members">
+      {foundingMembers.map((member) => (
+        <Card variant="profile" {...member} role="listitem" />
+      ))}
+    </Grid>
+    <ContentWrapper variant="columns">
+      <Heading tag="h3" maxWidth={24}>
+        A seat for patient and community voices
+      </Heading>
+      <ContentWrapper slot="column2">
+        <Paragraph>
+          As OPSA is established, we are creating a role for patients,
+          caregivers and patient advocates with lived experience of pain. Your
+          perspective belongs in the conversation.
+        </Paragraph>
+        <ButtonWrapper>
+          <Button element="link" href="#join" variant="directional">
+            Get involved
+          </Button>
+        </ButtonWrapper>
+      </ContentWrapper>
+    </ContentWrapper>
+  </Section>
+  <!-- Resources -->
+  <Section id="presentations" aria-labelledby="resources-heading">
+    <ContentWrapper variant="columns">
+      <Eyebrow>Presentations & updates</Eyebrow>
+      <Heading id="resources-heading">
+        A shared understanding of pain care.
+      </Heading>
+      <Paragraph>
+        OPSA’s presentation library is taking shape. There are no presentations
+        available to download yet.
+      </Paragraph>
+      <Accordion slot="column2">
+        <AccordionItem heading="What is OPSA working towards?" open>
+          <Paragraph>
+            A provincial voice for pain specialists and the people they care
+            for, with patient experience and community-based care at the centre
+            of its advocacy.
+          </Paragraph>
+        </AccordionItem>
+        <AccordionItem heading="Who can express interest in membership?">
+          <Paragraph>
+            Pain specialists, physicians, clinic leaders, patients, caregivers,
+            patient advocates, and community and health system partners are
+            invited to express their interest.
+          </Paragraph>
+        </AccordionItem>
+        <AccordionItem heading="Is OPSA a clinic or referral service?">
+          <Paragraph>
+            OPSA is an association focused on advocacy. For questions about your
+            own care, please contact your treating clinician.
+          </Paragraph>
+        </AccordionItem>
+      </Accordion>
+    </ContentWrapper>
+  </Section>
+  <!-- Membership -->
+  <Section id="join" theme="dark" aria-labelledby="join-heading">
+    <ContentWrapper variant="sticky-content">
+      <Eyebrow>Founding membership</Eyebrow>
+      <Heading id="join-heading">
+        Help build Ontario’s voice for pain care.
+      </Heading>
+      <Paragraph>
+        OPSA is being incorporated as a membership-funded not-for-profit. We are
+        bringing pain specialists, patients, caregivers and community partners
+        together under one voice.
+      </Paragraph>
+      <Paragraph>
+        Register your interest to hear more as founding membership opens.
+      </Paragraph>
+      <PriorityList
+        class="margin-top-6"
+        items={[
+          "Pain specialist physicians and clinic leaders",
+          "Patients, caregivers and patient advocates",
+          "Community and health system partners",
+        ]}
+      />
+      <MembershipForm slot="column2" />
+    </ContentWrapper>
+  </Section>
+</Layout>

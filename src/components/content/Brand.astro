@@ -1,0 +1,37 @@
+---
+import type { HTMLAttributes } from "astro/types";
+interface Props extends HTMLAttributes<"span"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{render && (
+  <span class:list={["brand_wrap", className]} {...rest}>
+    <img
+      class="brand_image"
+      src="/images/opsa-logo.jpg"
+      width="1342"
+      height="1319"
+      alt="OPSA — Advocating for image-guided chronic pain care"
+    />
+  </span>
+)}
+<style is:global>
+  @layer components {
+    .brand_wrap {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      background: var(--light-100);
+    }
+    .brand_image {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 2.25;
+      object-fit: cover;
+      object-position: 50% 48%;
+    }
+  }
+</style>

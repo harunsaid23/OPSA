@@ -1,0 +1,356 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Img from "@/components/media/Img.astro";
+import Overlay from "@/components/media/Overlay.astro";
+
+type CardSymbol = "people" | "community" | "voice";
+
+type ImageSource = ImageMetadata | string;
+
+type Base = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Eyebrow text. Supports inline markup. */
+  eyebrow?: string;
+  /** Card title. Supports inline markup. */
+  heading?: string;
+  /** Heading level. */
+  headingTag?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  /** Body text. Supports inline markup. */
+  text?: string;
+  /** Button label. Omit to hide the button. */
+  buttonLabel?: string;
+  /** Button destination. Omit for a `<button>`. */
+  buttonHref?: string;
+  /** Card layout. */
+  variant?:
+    "default" | "cover" | "stacked" | "feature" | "statement" | "profile";
+  /** Color theme of element and its children. */
+  theme?: "inherit" | "light" | "dark" | "brand" | "invert";
+};
+
+type Props = Base &
+  (
+    | {
+        variant: "feature";
+        /** Feature symbol. */
+        symbol: CardSymbol;
+        image?: never;
+        imageAlt?: never;
+      }
+    | {
+        variant?: "default" | "statement";
+        symbol?: never;
+        image?: never;
+        imageAlt?: never;
+      }
+    | {
+        variant: "cover";
+        symbol?: never;
+        /** Image source. */
+        image?: ImageSource;
+        /** Image alt text. Omit for decorative images. */
+        imageAlt?: string;
+      }
+    | {
+        variant: "stacked" | "profile";
+        symbol?: never;
+        /** Color theme of element and its children. */
+        theme?: never;
+        /** Image source. */
+        image?: ImageSource;
+        /** Image alt text. Omit for decorative images. */
+        imageAlt?: string;
+      }
+  );
+
+type AllProps = Base & {
+  symbol?: CardSymbol;
+  image?: ImageSource;
+  imageAlt?: string;
+};
+
+const {
+  render = true,
+  eyebrow,
+  heading,
+  headingTag = "h3",
+  text,
+  buttonLabel,
+  buttonHref,
+  variant = "default",
+  symbol,
+  theme = "inherit",
+  image,
+  imageAlt,
+  class: className,
+  ...rest
+} = Astro.props as AllProps;
+
+const hasImage =
+  (variant === "cover" || variant === "stacked" || variant === "profile") &&
+  !!image;
+const hasProfilePlaceholder = variant === "profile" && !image;
+const symbols: Record<CardSymbol, string> = {
+  people:
+    "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z",
+  community: "m3 10 9-7 9 7M5 9v12h14V9M12 11v6M9 14h6",
+  voice:
+    "M3 10v4h4l6 4V6l-6 4H3ZM16 9a5 5 0 0 1 0 6M19 6a9 9 0 0 1 0 12M6 14l2 7h3l-2-6",
+};
+const hasContent = !!(eyebrow || heading || text || buttonLabel);
+const hasTheme =
+  variant !== "stacked" && variant !== "profile" && theme !== "inherit";
+
+/* The button each variant closes with, so a set of cards reads as one system.
+   A link carries no emphasis of its own, so the two are picked together. */
+const buttonKind =
+  variant === "stacked"
+    ? ({ variant: "link" } as const)
+    : ({ emphasis: variant === "cover" ? "primary" : "secondary" } as const);
+
+if (import.meta.env.DEV && render) {
+  if ((variant === "stacked" || variant === "profile") && theme !== "inherit") {
+    console.warn(
+      `[lumos] <Card variant="${variant}"> has no surface to color, so \`theme\` was dropped. It keeps the theme around it.`,
+    );
+  }
+  if (variant === "default" && image) {
+    console.warn(
+      '[lumos] <Card variant="default"> holds no image, so `image` was dropped. Use the cover or stacked variant to show it.',
+    );
+  }
+  if ((variant === "cover" || variant === "stacked") && !image) {
+    console.warn(
+      `[lumos] <Card variant="${variant}"> has no \`image\`, so it renders as a plain card.`,
+    );
+  }
+}
+---
+
+{render && (hasContent || hasImage) && (
+  <div
+    class:list={[
+      "card_wrap",
+      variant !== "default" && variant,
+      hasTheme && `theme-${theme}`,
+      className,
+    ]}
+    {...rest}
+  >
+    {(hasImage || hasProfilePlaceholder) && (
+      <div class="card_visual">
+        {hasImage && <Img src={image!} alt={imageAlt} />}
+        {hasProfilePlaceholder && (
+          <svg
+            class="card_portrait"
+            viewBox="0 0 120 120"
+            fill="none"
+            aria-hidden="true"
+          >
+            <circle
+              cx="60"
+              cy="60"
+              r="54"
+              stroke="currentColor"
+              stroke-width="1"
+            />
+            <circle cx="60" cy="45" r="16" fill="currentColor" />
+            <path d="M28 96v-6a32 32 0 0 1 64 0v6" fill="currentColor" />
+          </svg>
+        )}
+        {variant === "cover" && <Overlay variant="gradient" />}
+      </div>
+    )}
+    {hasContent && (
+      <div class="card_content margin-trim">
+        {variant === "feature" && symbol && (
+          <svg
+            class="card_symbol"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d={symbols[symbol]}
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        )}
+        <Eyebrow>
+          <Fragment set:html={eyebrow} />
+        </Eyebrow>
+        <Heading
+          tag={headingTag}
+          variant={variant === "statement" ? "h3" : "h5"}
+        >
+          <Fragment set:html={heading} />
+        </Heading>
+        <Paragraph
+          variant={
+            variant === "statement"
+              ? "large"
+              : variant === "profile"
+                ? "small"
+                : "inherit"
+          }
+        >
+          <Fragment set:html={text} />
+        </Paragraph>
+        <ButtonWrapper>
+          {buttonHref ? (
+            <Button element="link" href={buttonHref} {...buttonKind}>
+              {buttonLabel}
+            </Button>
+          ) : (
+            <Button {...buttonKind}>{buttonLabel}</Button>
+          )}
+        </ButtonWrapper>
+      </div>
+    )}
+  </div>
+)}
+
+<style is:global>
+  @layer components {
+    .card_wrap {
+      --_padding: var(--space-6);
+      --_min-height: 20rem;
+      --_visual-ratio: 3 / 2;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--_padding);
+      position: relative;
+      background-color: var(--background-2);
+      border-radius: var(--radius-main);
+      overflow: clip;
+
+      &.feature {
+        background-color: var(--background);
+        border: var(--border-width) solid var(--border);
+      }
+      &.statement {
+        --_padding: var(--space-6);
+        min-height: 22rem;
+        justify-content: center;
+      }
+      &.cover {
+        min-height: var(--_min-height);
+      }
+      &:is(.stacked, .profile) {
+        background-color: transparent;
+        overflow: visible;
+      }
+    }
+
+    .card_symbol {
+      width: 2.5rem;
+      height: 2.5rem;
+      color: var(--heading-accent);
+      margin-bottom: var(--space-6);
+    }
+    .card_visual {
+      position: relative;
+      width: 100%;
+      flex: none;
+      border-radius: inherit;
+      overflow: clip;
+
+      :is(.stacked, .profile) > & {
+        aspect-ratio: var(--_visual-ratio);
+      }
+
+      .profile > & {
+        display: grid;
+        place-items: center;
+        background: var(--background);
+        border: var(--border-width) solid var(--border);
+      }
+
+      .cover > & {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      > :is(.image, .video) {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .card_portrait {
+      width: 40%;
+      height: auto;
+      color: var(--border);
+    }
+
+    /* Media fills its box, be that the whole card or the band across its top.
+       The component layer puts this above the `height: auto` every image and
+       video starts from. */
+    .card_visual > :is(.image, .video) {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Buttons closing a card sit on its floor, however tall the row around it
+       grows. This outranks the margin `.button-wrapper` sets for itself. */
+    .card_content > .button-wrapper:last-child {
+      margin-top: auto;
+      padding-top: var(--space-6);
+    }
+
+    .card_content {
+      display: flex;
+      flex-direction: column;
+      align-items: var(--_alignment, start);
+      text-align: var(--_alignment, start);
+      flex-grow: 1;
+      width: 100%;
+      max-width: 100%;
+      padding: var(--_padding);
+
+      .cover > & {
+        z-index: 1;
+      }
+
+      :is(.stacked, .profile) > & {
+        padding-inline: 0;
+        padding-top: 0;
+      }
+    }
+
+    .card_wrap:has(.button_wrap) {
+      .button_wrap::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+      }
+
+      .card_content a:not(.button_wrap) {
+        position: relative;
+        z-index: 1;
+      }
+
+      .image {
+        transition: scale calc(var(--hover-duration) * 2) var(--hover-ease);
+      }
+
+      @media (hover: hover) {
+        &:hover .image {
+          scale: 1.04;
+        }
+      }
+    }
+  }
+</style>

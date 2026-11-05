@@ -1,0 +1,159 @@
+---
+import type { HTMLAttributes } from "astro/types";
+interface Props extends HTMLAttributes<"figure"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{render && (
+  <figure class:list={["hero-signal_wrap", className]} {...rest}>
+    <svg
+      class="hero-signal_visual"
+      viewBox="0 0 520 490"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle class="hero-signal_orbit" cx="260" cy="240" r="200" />
+      <circle class="hero-signal_orbit" cx="260" cy="240" r="153" />
+      <circle
+        class="hero-signal_arc"
+        cx="260"
+        cy="240"
+        r="200"
+        pathLength="100"
+        stroke-dasharray="69 31"
+        transform="rotate(-90 260 240)"
+      />
+      <circle class="hero-signal_inner" cx="260" cy="240" r="99" />
+      <path
+        class="hero-signal_connection"
+        d="M260 141V40M174 290l-87 50M346 290l87 50"
+      />
+      <circle class="hero-signal_core" cx="260" cy="199" r="6" />
+      <text class="hero-signal_title" x="260" y="239" text-anchor="middle">
+        People at
+      </text>
+      <text class="hero-signal_title" x="260" y="269" text-anchor="middle">
+        the centre.
+      </text>
+      <circle class="hero-signal_node" cx="260" cy="40" r="7" />
+      <circle class="hero-signal_node" cx="87" cy="340" r="7" />
+      <circle class="hero-signal_node" cx="433" cy="340" r="7" />
+      <rect
+        class="hero-signal_label-surface"
+        x="184"
+        y="58"
+        width="152"
+        height="40"
+        rx="20"
+      />
+      <text class="hero-signal_label" x="260" y="84" text-anchor="middle">
+        Pain specialists
+      </text>
+      <rect
+        class="hero-signal_label-surface"
+        x="9"
+        y="364"
+        width="184"
+        height="40"
+        rx="20"
+      />
+      <text class="hero-signal_label" x="101" y="390" text-anchor="middle">
+        Patients & caregivers
+      </text>
+      <rect
+        class="hero-signal_label-surface"
+        x="345"
+        y="364"
+        width="166"
+        height="40"
+        rx="20"
+      />
+      <text class="hero-signal_label" x="428" y="390" text-anchor="middle">
+        Community partners
+      </text>
+    </svg>
+    <figcaption class="hero-signal_caption text-style-small">
+      Pain specialists, patients and community partners.
+      <br />
+      One connected voice for Ontario.
+    </figcaption>
+  </figure>
+)}
+<style is:global>
+  @layer components {
+    .hero-signal_wrap {
+      width: min(100%, 34rem);
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--heading-accent);
+      @media (prefers-reduced-motion: no-preference) {
+        & .hero-signal_arc {
+          animation: care-connect calc(var(--open-duration) * 7)
+            var(--hover-ease) both;
+        }
+      }
+    }
+    .hero-signal_visual {
+      width: 100%;
+      aspect-ratio: 520 / 490;
+      overflow: visible;
+    }
+    .hero-signal_orbit {
+      stroke: currentColor;
+      stroke-opacity: 0.22;
+      stroke-width: 1;
+    }
+    .hero-signal_arc {
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+    .hero-signal_inner {
+      fill: var(--background-2);
+      stroke: var(--border);
+      stroke-width: 1;
+    }
+    .hero-signal_connection {
+      stroke: currentColor;
+      stroke-opacity: 0.4;
+      stroke-width: 1;
+    }
+    .hero-signal_core {
+      fill: var(--accent-care);
+    }
+    .hero-signal_node {
+      fill: currentColor;
+      stroke: var(--background);
+      stroke-width: 3;
+    }
+    .hero-signal_title {
+      fill: var(--text);
+      font-family: var(--heading-family);
+      font-size: 1.625rem;
+    }
+    .hero-signal_label-surface {
+      fill: var(--background-2);
+    }
+    .hero-signal_label {
+      fill: var(--text);
+      font-family: var(--primary-family);
+      font-size: 0.875rem;
+    }
+    .hero-signal_caption {
+      color: var(--text-2);
+      text-align: center;
+    }
+    @keyframes care-connect {
+      from {
+        stroke-dasharray: 0 100;
+      }
+      to {
+        stroke-dasharray: 69 31;
+      }
+    }
+  }
+</style>

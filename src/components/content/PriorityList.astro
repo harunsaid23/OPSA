@@ -1,0 +1,55 @@
+---
+import type { HTMLAttributes } from "astro/types";
+interface Props extends HTMLAttributes<"ul"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** List items. */
+  items: Array<string | { heading: string; text: string }>;
+}
+const { render = true, items, class: className, ...rest } = Astro.props;
+---
+
+{render && items?.length > 0 && (
+  <ul class:list={["priority-list_wrap", className]} {...rest}>
+    {items.map((item) => (
+      <li class="priority-list_item">
+        <span class="priority-list_marker" aria-hidden="true" />
+        {typeof item === "string" ? (
+          <span>{item}</span>
+        ) : (
+          <div class="priority-list_copy">
+            <h3 class="priority-list_title text-style-h5">{item.heading}</h3>
+            <p>{item.text}</p>
+          </div>
+        )}
+      </li>
+    ))}
+  </ul>
+)}
+<style is:global>
+  @layer components {
+    .priority-list_wrap {
+      width: 100%;
+      border-top: var(--border-width) solid var(--border);
+    }
+    .priority-list_item {
+      display: flex;
+      gap: var(--space-4);
+      padding-block: var(--space-5);
+      border-bottom: var(--border-width) solid var(--border);
+    }
+    .priority-list_copy {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .priority-list_marker {
+      flex: none;
+      width: 0.5rem;
+      height: 0.5rem;
+      margin-top: 0.5em;
+      border-radius: var(--radius-round);
+      background-color: var(--heading-accent);
+    }
+  }
+</style>

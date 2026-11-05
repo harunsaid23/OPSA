@@ -1,0 +1,142 @@
+---
+import { SITE_NAME, CONTACT_EMAIL, NAV_LINKS } from "@/consts.ts";
+import Brand from "@/components/content/Brand.astro";
+interface Props {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+const { render = true } = Astro.props;
+---
+
+{render && (
+  <footer class="footer_wrap" id="contact">
+    <div class="footer_inner">
+      <div class="footer_top">
+        <div class="footer_about">
+          <a class="footer_logo" href="/" aria-label={SITE_NAME}>
+            <Brand />
+          </a>
+          <p class="footer_title text-style-h6">
+            Ontario Pain Specialist Association
+          </p>
+          <p class="footer_description text-style-small">
+            OPSA is in formation and is being incorporated as a not-for-profit
+            corporation under the Ontario Not-for-Profit Corporations Act, 2010.
+          </p>
+        </div>
+        <div class="footer_contact">
+          <h2 class="footer_title text-style-h6">Contact OPSA</h2>
+          {CONTACT_EMAIL ? (
+            <a class="footer_email" href={`mailto:${CONTACT_EMAIL}`}>
+              {CONTACT_EMAIL}
+            </a>
+          ) : (
+            <p class="footer_description text-style-small">
+              Contact details will be published as OPSA is established.
+            </p>
+          )}
+          <a class="footer_link" href="/#join">
+            Founding membership enquiries ↗
+          </a>
+        </div>
+      </div>
+      <div class="footer_bottom">
+        <p class="footer_copyright text-style-small">
+          © {new Date().getFullYear()} Ontario Pain Specialist Association
+        </p>
+        <nav aria-label="Footer">
+          <ul class="footer_links">
+            {NAV_LINKS.map((link) => (
+              <li>
+                <a class="footer_link" href={link.href}>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+            <li>
+              <a class="footer_link" href="/#join">
+                Membership
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </footer>
+)}
+<style is:global>
+  @layer components {
+    .footer_wrap {
+      display: flex;
+      justify-content: center;
+      padding: var(--section-space-small) var(--site-margin) var(--space-6);
+      background: var(--background);
+      color: var(--text);
+    }
+    .footer_inner {
+      width: 100%;
+      max-width: var(--max-width-main);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .footer_top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--space-7);
+    }
+    .footer_about {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      flex: 1 1 24rem;
+    }
+    .footer_logo {
+      display: block;
+      width: 15rem;
+      max-width: 100%;
+    }
+    .footer_description {
+      max-width: 58ch;
+      color: var(--text-2);
+    }
+    .footer_contact {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      gap: var(--space-4);
+      flex: 0 1 21rem;
+    }
+    .footer_email {
+      overflow-wrap: anywhere;
+    }
+    .footer_links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3) var(--space-4);
+      font-size: var(--text-small);
+    }
+    .footer_link {
+      color: var(--text-2);
+      text-decoration: underline;
+      text-decoration-color: var(--border);
+      text-underline-offset: 0.25em;
+      transition: color var(--hover-duration) var(--hover-ease);
+    }
+    .footer_link:hover {
+      color: var(--text);
+    }
+    .footer_bottom {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-5);
+      justify-content: space-between;
+      padding-top: var(--space-5);
+      border-top: var(--border-width) solid var(--border);
+    }
+    .footer_copyright {
+      color: var(--text-2);
+    }
+  }
+</style>
