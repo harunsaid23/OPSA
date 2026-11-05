@@ -12,6 +12,15 @@ The homepage is built from Lumos for Astro components. `/style-guide` retains th
 
 ## Before launch
 
+## Sharing and deployment
+
+- Source repository: https://github.com/harunsaid23/OPSA
+- Shareable site: https://opsa.pages.dev
+- Cloudflare Pages project: `opsa`, deployed with Direct Upload. GitHub pushes do not automatically deploy.
+- To update the live site, run `npm ci` and `npm run build`, then upload the contents of `dist/` as a new production deployment in Cloudflare Pages. `.nvmrc` pins the supported Node version.
+
+## Production settings
+
 Copy `.env.example` to `.env` and supply:
 
 - `PUBLIC_SITE_URL`: the confirmed public origin, such as `https://your-domain.ca`. Until configured, canonical and social image URLs and the sitemap are omitted.
