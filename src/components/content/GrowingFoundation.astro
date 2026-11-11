@@ -1,0 +1,162 @@
+---
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import type { HTMLAttributes } from "astro/types";
+interface Props extends HTMLAttributes<"figure"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+const { render = true, class: className, ...rest } = Astro.props;
+const wedge = (start: number, end: number) => {
+  const point = (radius: number, angle: number) =>
+    `${260 + radius * Math.cos(angle)},${230 - radius * Math.sin(angle)}`;
+  return `M${point(174, start)} A174 174 0 0 0 ${point(174, end)} L${point(96, end)} A96 96 0 0 1 ${point(96, start)}Z`;
+};
+---
+
+{render && (
+  <figure class:list={["foundation_wrap", className]} {...rest}>
+    <div class="foundation_artboard">
+      <svg
+        class="foundation_visual"
+        viewBox="0 0 520 440"
+        fill="none"
+        role="img"
+        aria-label="Separate geometric pieces join to form a supporting arch"
+      >
+        <path
+          class="foundation_outline"
+          d="M66 397V230a194 194 0 0 1 388 0v167M184 397V230a76 76 0 0 1 152 0v167"
+          stroke-dasharray="3 8"
+        />
+        {[0, 1].map((side) =>
+          [0, 1].map((row) => (
+            <rect
+              class="foundation_piece"
+              x={side ? 356 : 86}
+              y={row ? 233 : 315}
+              width="78"
+              height="76"
+              rx="3"
+              style={`--_order: ${row * 2 + side}; --_from-x: ${side ? 8 : -8}%; --_from-y: 8%; --_fill: var(--${row ? "accent-sky" : "brand-500"})`}
+            />
+          )),
+        )}
+        {[0, 1, 2, 3, 4].map((index) => (
+          <path
+            class="foundation_piece"
+            d={wedge(
+              (index * Math.PI) / 5 + 0.016,
+              ((index + 1) * Math.PI) / 5 - 0.016,
+            )}
+            style={`--_order: ${index === 2 ? 8 : 4 + Math.min(index, 4 - index) * 2 + (index > 2 ? 1 : 0)}; --_from-x: ${index < 2 ? 6 : index > 2 ? -6 : 0}%; --_from-y: -8%; --_fill: var(--${index === 2 ? "light-100" : index % 2 ? "accent-sky" : "brand-500"})`}
+          />
+        ))}
+        <path class="foundation_ground" d="M44 399h432" />
+        <circle class="foundation_point" cx="260" cy="346" r="7" />
+        <path class="foundation_connection" d="M260 326v-65" />
+      </svg>
+    </div>
+    <figcaption>
+      <ContentWrapper centered>
+        <Heading tag="h2" variant="h4">
+          A growing foundation
+        </Heading>
+        <Paragraph>Different perspectives. One shared purpose.</Paragraph>
+        <ButtonWrapper marginTop="3">
+          <Button emphasis="secondary" data-foundation-replay>
+            Build together again
+          </Button>
+        </ButtonWrapper>
+      </ContentWrapper>
+    </figcaption>
+  </figure>
+)}
+
+<script>
+  import {
+    enterIllustration,
+    illustrationMotion,
+  } from "@/utils/illustrationMotion";
+  document
+    .querySelectorAll<HTMLElement>(".foundation_wrap")
+    .forEach((figure) => {
+      const motion = illustrationMotion(figure);
+      const replay = enterIllustration(figure, () =>
+        [...figure.querySelectorAll<SVGElement>(".foundation_piece")].map(
+          (piece) => {
+            const style = getComputedStyle(piece);
+            return piece.animate(
+              [
+                {
+                  transform: `translate(${style.getPropertyValue("--_from-x")}, ${style.getPropertyValue("--_from-y")})`,
+                  opacity: 0.3,
+                },
+                { transform: "translate(0, 0)", opacity: 1 },
+              ],
+              {
+                duration: motion.duration,
+                delay:
+                  Number(style.getPropertyValue("--_order")) * motion.stagger,
+                easing: motion.assembleEase,
+                fill: "backwards",
+              },
+            );
+          },
+        ),
+      );
+      const button = figure.querySelector<HTMLButtonElement>(
+        "[data-foundation-replay]",
+      );
+      button?.addEventListener("click", replay);
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+      const update = () => {
+        if (button) button.hidden = reduced.matches;
+      };
+      reduced.addEventListener("change", update);
+      update();
+    });
+</script>
+
+<style is:global>
+  @layer components {
+    .foundation_wrap {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      width: 100%;
+      & .foundation_artboard {
+        container-type: inline-size;
+        aspect-ratio: 13 / 11;
+      }
+      & .foundation_visual {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      & .foundation_outline {
+        stroke: var(--accent-sky);
+        opacity: 0.3;
+      }
+      & .foundation_piece {
+        fill: var(--_fill);
+        transform-box: view-box;
+      }
+      & .foundation_ground {
+        stroke: var(--accent-sky);
+        stroke-width: 2;
+      }
+      & .foundation_point {
+        fill: var(--accent-care);
+      }
+      & .foundation_connection {
+        stroke: var(--accent-sky);
+        opacity: 0.5;
+      }
+    }
+  }
+</style>

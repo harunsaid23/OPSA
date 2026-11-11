@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { slotContent } from "@/utils/slots";
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+const { render = true, class: className, ...rest } = Astro.props;
+const content = await slotContent(Astro.slots);
+---
+
+{render && content && (
+  <div class:list={["tab-feature_wrap", className]} {...rest}>
+    <div class="tab-feature_content margin-trim">
+      <Fragment set:html={content} />
+    </div>
+    <div class="tab-feature_visual">
+      <slot name="visual" />
+    </div>
+  </div>
+)}
+<style is:global>
+  @layer components {
+    .tab-feature_wrap {
+      display: grid;
+      gap: var(--space-6);
+      & .tab-feature_content,
+      & .tab-feature_visual {
+        min-width: 0;
+      }
+      @media (width >= 64rem) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        .tabs_wrap.is-ready & {
+          grid-template-columns: subgrid;
+          grid-template-rows: subgrid;
+          & .tab-feature_content {
+            grid-area: 2 / 1;
+          }
+          & .tab-feature_visual {
+            grid-area: 1 / 2 / 3 / 3;
+          }
+        }
+      }
+    }
+  }
+</style>

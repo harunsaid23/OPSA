@@ -1,0 +1,136 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+const shares = [
+  [10, 720],
+  [25, 290],
+  [50, 145],
+  [100, 75],
+];
+---
+
+{render && (
+  <div class:list={["membership-fees_wrap", className]} {...rest}>
+    <h3 class="membership-fees_title text-style-h4">
+      Appendix: Membership fees
+    </h3>
+    <p class="text-style-main">
+      All monies collected will go towards OPSA initiatives.
+    </p>
+    <p class="text-style-main">
+      A one-time <strong>$400 initiation fee</strong> covers the first month.
+      After that, the monthly physician fee follows the sliding scale below,
+      based on total membership.
+    </p>
+    <table class="membership-fees_table text-style-main">
+      <caption>Your monthly share falls as membership grows.</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="text-style-small">
+            Members
+          </th>
+          <th scope="col" class="text-style-small">
+            Monthly share
+            <span class="sr-only">per member</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {shares.map(([members, amount]) => (
+          <tr class:list={[members === 25 && "founding"]}>
+            <th scope="row">
+              <span class="membership-fees_members text-style-h5">
+                {members}
+              </span>
+              {members === 25 && (
+                <span class="membership-fees_label text-style-small">
+                  Founding members
+                </span>
+              )}
+            </th>
+            <td>
+              <span class="membership-fees_amount text-style-h4">
+                ${amount}
+              </span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
+<style is:global>
+  @layer components {
+    .membership-fees_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      width: 100%;
+      padding: var(--space-5);
+      background: var(--background-2);
+      border-radius: var(--radius-main);
+    }
+    .membership-fees_table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      text-align: start;
+      font-variant-numeric: tabular-nums;
+      & caption {
+        text-align: start;
+        margin-bottom: var(--space-5);
+      }
+      & :is(th, td) {
+        padding: var(--space-4);
+        border-bottom: var(--border-width) solid var(--border);
+        background: var(--background);
+        text-align: start;
+        vertical-align: middle;
+      }
+      & :is(th, td):last-child {
+        text-align: end;
+      }
+      & thead th {
+        color: var(--text-2);
+        font-weight: var(--primary-medium);
+      }
+      & thead th:first-child {
+        border-top-left-radius: var(--radius-small);
+      }
+      & thead th:last-child {
+        border-top-right-radius: var(--radius-small);
+      }
+      & tbody tr:last-child > * {
+        border-bottom: none;
+      }
+      & tbody tr:last-child > :first-child {
+        border-bottom-left-radius: var(--radius-small);
+      }
+      & tbody tr:last-child > :last-child {
+        border-bottom-right-radius: var(--radius-small);
+      }
+      & .founding > * {
+        background: var(--surface-highlight);
+      }
+      & .membership-fees_members,
+      & .membership-fees_amount {
+        display: block;
+        color: var(--text);
+      }
+      & .membership-fees_label {
+        display: block;
+        margin-top: var(--space-2);
+        color: var(--heading-accent);
+        font-weight: var(--primary-medium);
+      }
+    }
+  }
+</style>

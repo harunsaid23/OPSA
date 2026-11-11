@@ -87,14 +87,14 @@ const {
     .form-choice {
       display: inline-flex;
       align-items: center;
-      gap: 0.75em;
+      gap: var(--choice-gap);
       cursor: pointer;
     }
 
     .form-choice_input {
       position: absolute;
-      width: 1px;
-      height: 1px;
+      width: var(--border-width);
+      height: var(--border-width);
       opacity: 0;
       pointer-events: none;
     }
@@ -167,7 +167,7 @@ const {
         height: 1.5em;
         border-radius: var(--radius-round);
         place-items: center start;
-        padding: 0.15em;
+        padding: var(--choice-mark-inset);
       }
       & :is(.form-choice_tick, .form-choice_dot) {
         display: none;
@@ -190,7 +190,7 @@ const {
 
     /* Chip */
     .form-choice.chip {
-      padding: 0.75em 1.5em;
+      padding: var(--control-padding-block) var(--control-padding-inline);
       background-color: var(--background-2);
       border: var(--border-width) solid transparent;
       border-radius: var(--radius-round);

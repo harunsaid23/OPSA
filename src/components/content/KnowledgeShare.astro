@@ -1,0 +1,170 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+interface Props extends HTMLAttributes<"figure"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{render && (
+  <figure class:list={["knowledge-share_wrap", className]} {...rest}>
+    <div class="knowledge-share_artboard">
+      <svg
+        class="knowledge-share_visual"
+        viewBox="0 0 520 440"
+        fill="none"
+        role="img"
+        aria-label="A presentation connects ideas with an audience"
+      >
+        <path
+          class="knowledge-share_back"
+          d="M110 44h294a16 16 0 0 1 16 16v178"
+        />
+        <rect
+          class="knowledge-share_slide"
+          x="78"
+          y="66"
+          width="320"
+          height="204"
+          rx="16"
+        />
+        <path
+          class="knowledge-share_outline"
+          pathLength="100"
+          d="M94 66h288a16 16 0 0 1 16 16v172a16 16 0 0 1-16 16H94a16 16 0 0 1-16-16V82a16 16 0 0 1 16-16Z"
+        />
+        <g class="knowledge-share_ideas">
+          <path class="knowledge-share_heading" d="M116 110h128" />
+          <path class="knowledge-share_copy" d="M116 136h200M116 154h146" />
+          <path class="knowledge-share_diagram" d="M147 216h183" />
+          <circle class="knowledge-share_node" cx="147" cy="216" r="12" />
+          <circle class="knowledge-share_node" cx="239" cy="216" r="12" />
+          <circle class="knowledge-share_node" cx="330" cy="216" r="12" />
+        </g>
+        <path
+          class="knowledge-share_connection"
+          pathLength="100"
+          d="M238 271v35M238 306H112v32M238 306v32M238 306h126v32"
+        />
+        {[112, 238, 364].map((x) => (
+          <g class="knowledge-share_audience" transform={`translate(${x} 0)`}>
+            <circle cx="0" cy="359" r="13" />
+            <path d="M-27 408v-8a27 27 0 0 1 54 0v8" />
+          </g>
+        ))}
+      </svg>
+    </div>
+    <figcaption>
+      <ContentWrapper centered>
+        <Heading tag="h2" variant="h4">
+          Knowledge to share.
+        </Heading>
+        <Paragraph>Care, experience and conversation.</Paragraph>
+      </ContentWrapper>
+    </figcaption>
+  </figure>
+)}
+
+<script>
+  import {
+    enterIllustration,
+    illustrationMotion,
+  } from "@/utils/illustrationMotion";
+  document
+    .querySelectorAll<HTMLElement>(".knowledge-share_wrap")
+    .forEach((figure) => {
+      const motion = illustrationMotion(figure);
+      enterIllustration(figure, () => [
+        ...[
+          ...figure.querySelectorAll(
+            ".knowledge-share_outline, .knowledge-share_connection",
+          ),
+        ].map((path, index) =>
+          path.animate(
+            [{ strokeDashoffset: "100" }, { strokeDashoffset: "0" }],
+            {
+              duration: motion.duration,
+              delay: index * motion.duration,
+              easing: motion.ease,
+              fill: "backwards",
+            },
+          ),
+        ),
+        ...[
+          ...figure.querySelectorAll(
+            ".knowledge-share_ideas, .knowledge-share_audience",
+          ),
+        ].map((part, index) =>
+          part.animate([{ opacity: 0.25 }, { opacity: 1 }], {
+            duration: motion.duration,
+            delay: motion.duration + index * motion.stagger * 2,
+            easing: motion.ease,
+            fill: "backwards",
+          }),
+        ),
+      ]);
+    });
+</script>
+
+<style is:global>
+  @layer components {
+    .knowledge-share_wrap {
+      width: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      & .knowledge-share_artboard {
+        container-type: inline-size;
+        aspect-ratio: 13 / 11;
+      }
+      & .knowledge-share_visual {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      & .knowledge-share_back {
+        stroke: var(--accent-sky);
+        stroke-opacity: 0.35;
+      }
+      & .knowledge-share_slide {
+        fill: var(--background-2);
+        stroke: var(--border);
+      }
+      & .knowledge-share_outline,
+      & .knowledge-share_connection {
+        stroke: var(--accent-sky);
+        stroke-width: 2;
+        stroke-dasharray: 100 100;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      & .knowledge-share_heading {
+        stroke: var(--text);
+        stroke-width: 6;
+        stroke-linecap: round;
+      }
+      & .knowledge-share_copy,
+      & .knowledge-share_diagram {
+        stroke: var(--accent-sky);
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+      & .knowledge-share_node {
+        fill: var(--background-2);
+        stroke: var(--accent-sky);
+        stroke-width: 2;
+      }
+      & .knowledge-share_audience {
+        fill: var(--background-2);
+        stroke: var(--accent-sky);
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+    }
+  }
+</style>

@@ -30,7 +30,7 @@ type Tag =
 type Kind =
   | {
       /** Button type. */
-      variant?: "main" | "directional";
+      variant?: "main" | "directional" | "choice";
       /** Visual emphasis. */
       emphasis?: Emphasis;
       label?: never;
@@ -81,7 +81,8 @@ type Props = {
 type AllProps = HTMLAttributes<"button"> &
   Omit<HTMLAttributes<"a">, "type"> & {
     render?: boolean;
-    variant?: "main" | "directional" | "link" | "play" | "close" | "arrow";
+    variant?:
+      "main" | "directional" | "choice" | "link" | "play" | "close" | "arrow";
     emphasis?: Emphasis;
     label?: string;
     pressed?: boolean;
@@ -114,7 +115,10 @@ const tagAttrs = isLink
 const marks = { play, close, arrow };
 /* main and link are written, the rest are marks with a label. */
 const isWritten =
-  variant === "main" || variant === "directional" || variant === "link";
+  variant === "main" ||
+  variant === "directional" ||
+  variant === "choice" ||
+  variant === "link";
 const content = isWritten ? await slotContent(Astro.slots) : "";
 
 const named = {
@@ -200,11 +204,14 @@ const named = {
       transition: transform var(--hover-duration) var(--hover-ease);
     }
     .button_wrap {
+      &[hidden] {
+        display: none;
+      }
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      gap: 0.5em;
-      padding: 0.75em 1.5em;
+      gap: var(--control-gap);
+      padding: var(--control-padding-block) var(--control-padding-inline);
       background-color: var(--button-background);
       color: var(--button-text);
       border: var(--border-width) solid var(--button-border);
@@ -239,6 +246,16 @@ const named = {
         --button-text-hover: var(--button-2-text-hover);
         --button-border-hover: var(--button-2-border-hover);
       }
+      &.choice {
+        min-height: var(--target-size);
+        padding: var(--space-3);
+        background-color: var(--background-2);
+        &:is([data-active], [aria-pressed="true"]) {
+          background-color: var(--text);
+          color: var(--background);
+          border-color: var(--text);
+        }
+      }
       &.link {
         --button-background: transparent;
         --button-text: var(--link-text);
@@ -247,7 +264,7 @@ const named = {
         --button-text-hover: var(--link-text-hover);
         --button-border-hover: var(--link-border);
 
-        padding: 0.4em 0;
+        padding: var(--control-inline-padding-block) 0;
         border: 0;
         border-bottom: var(--border-width) solid var(--button-border);
         border-radius: 0;
@@ -272,7 +289,7 @@ const named = {
       }
       &:is(.play, .close, .arrow) {
         gap: 0;
-        padding: 0.75em;
+        padding: var(--control-padding-block);
         border-radius: var(--radius-round);
       }
       &.back .button_mark {

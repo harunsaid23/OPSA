@@ -1,0 +1,122 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Card from "@/components/item/Card.astro";
+import { mission } from "@/data/opsa";
+import CareLayers from "@/components/content/CareLayers.astro";
+---
+
+<Layout
+  title="Pain care"
+  description="OPSA advocates for specialist-led, image-guided procedures as part of holistic pain care for every Ontarian."
+>
+  <!-- Hero -->
+  <Section theme="dark">
+    <ContentWrapper variant="columns">
+      <Eyebrow>Pain care</Eyebrow>
+      <Heading tag="h1" class="heading-accent" maxWidth={20}>
+        Specialist-led.
+        <br />
+        <strong>Whole-person care.</strong>
+      </Heading>
+      <Paragraph variant="large" maxWidth={58}>
+        Image-guided procedures, delivered by appropriately trained pain
+        specialists, as part of a plan that supports the whole person.
+      </Paragraph>
+      <ButtonWrapper>
+        <Button element="link" href="/patient-voices/" variant="directional">
+          Patient voices
+        </Button>
+      </ButtonWrapper>
+      <CareLayers slot="column2" />
+    </ContentWrapper>
+  </Section>
+  <!-- Standard of care -->
+  <Section>
+    <ContentWrapper variant="columns-text">
+      <Eyebrow slot="intro">The care we advocate for</Eyebrow>
+      <Heading variant="h3" maxWidth={17}>
+        Three commitments.
+        <br />
+        One standard.
+      </Heading>
+      <Paragraph slot="column2">
+        OPSA believes people living with pain can get better. We advocate for
+        specialist-led, image-guided pain care as the standard for every
+        Ontarian.
+      </Paragraph>
+    </ContentWrapper>
+    <Grid large={3}>
+      <Card
+        variant="feature"
+        symbol="target"
+        heading="Image guidance"
+        text="Image-guided procedures performed for accuracy and safety, as part of a care plan tailored to the person receiving it."
+      />
+      <Card
+        variant="feature"
+        symbol="evidence"
+        heading="Appropriate training"
+        text="Procedures performed by appropriately trained pain specialists, bringing specialist expertise to a comprehensive care plan."
+      />
+      <Card
+        variant="feature"
+        symbol="connected"
+        heading="Holistic care"
+        text="Image-guided procedures alongside medical management, rehabilitation and psychological support, according to individual needs."
+      />
+    </Grid>
+  </Section>
+  <!-- Outcomes -->
+  <Section class="background-2">
+    <ContentWrapper
+      variant="columns-text"
+      column1Class="align-self-stretch justify-content-between"
+    >
+      <Eyebrow slot="intro">What matters to people</Eyebrow>
+      <Heading variant="h3" maxWidth={17}>
+        Work, family and community.
+      </Heading>
+
+      <ButtonWrapper marginTop="4">
+        <Button
+          element="link"
+          href="/patient-voices/#share"
+          variant="directional"
+        >
+          Share your experience
+        </Button>
+      </ButtonWrapper>
+      <Paragraph slot="column2">{mission[1]}</Paragraph>
+      <Paragraph slot="column2">
+        Patient and caregiver experiences belong in conversations about how pain
+        care is planned and delivered.
+      </Paragraph>
+    </ContentWrapper>
+  </Section>
+  <!-- Care questions -->
+  <Section>
+    <ContentWrapper>
+      <Heading tag="h2" variant="h3">
+        Looking for help with your own care?
+      </Heading>
+      <Paragraph maxWidth={65}>
+        OPSA is an advocacy association, not a clinic or referral service.
+        Please speak with your treating clinician about your care and treatment
+        options.
+      </Paragraph>
+      <ButtonWrapper>
+        <Button element="link" href="/about/" emphasis="secondary">
+          About OPSA
+        </Button>
+      </ButtonWrapper>
+    </ContentWrapper>
+  </Section>
+</Layout>

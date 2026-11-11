@@ -1,0 +1,108 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import outlines from "@/data/ontario-outline.json";
+interface Props extends HTMLAttributes<"figure"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{render && (
+  <figure class:list={["ontario-voice_wrap", className]} {...rest}>
+    <div class="ontario-voice_artboard">
+      <svg
+        class="ontario-voice_visual"
+        viewBox="0 0 520 480"
+        fill="none"
+        role="img"
+        aria-label="An outline of Ontario, from the northern shores to the Great Lakes"
+      >
+        <g class="ontario-voice_land">
+          {outlines.map((outline) => (
+            <path d={outline} />
+          ))}
+        </g>
+        <g class="ontario-voice_line">
+          {outlines.map((outline) => (
+            <path class="ontario-voice_trace" d={outline} pathLength="100" />
+          ))}
+        </g>
+      </svg>
+    </div>
+    <figcaption>
+      <ContentWrapper centered>
+        <Heading tag="h2" variant="h4">
+          Connected across Ontario.
+        </Heading>
+        <Paragraph>Pain specialists, patients and communities.</Paragraph>
+      </ContentWrapper>
+    </figcaption>
+  </figure>
+)}
+
+<script>
+  import {
+    enterIllustration,
+    illustrationMotion,
+  } from "@/utils/illustrationMotion";
+  document
+    .querySelectorAll<HTMLElement>(".ontario-voice_wrap")
+    .forEach((figure) => {
+      const motion = illustrationMotion(figure);
+      enterIllustration(figure, () =>
+        [...figure.querySelectorAll(".ontario-voice_trace")].map(
+          (path, index) =>
+            path.animate(
+              [{ strokeDashoffset: "100" }, { strokeDashoffset: "0" }],
+              {
+                duration: index === 0 ? motion.traceDuration : motion.duration,
+                delay: index === 0 ? 0 : motion.traceDelay,
+                easing: motion.traceEase,
+                fill: "backwards",
+              },
+            ),
+        ),
+      );
+    });
+</script>
+
+<style is:global>
+  @layer components {
+    .ontario-voice_wrap {
+      width: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      & .ontario-voice_artboard {
+        container-type: inline-size;
+        aspect-ratio: 13 / 12;
+      }
+      & .ontario-voice_visual {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      & .ontario-voice_land {
+        fill: var(--dark-800);
+        stroke: var(--accent-sky);
+        stroke-opacity: 0.2;
+        stroke-width: 1;
+      }
+      & .ontario-voice_line {
+        stroke: var(--accent-sky);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      & .ontario-voice_trace {
+        stroke-dasharray: 100 100;
+        stroke-dashoffset: 0;
+      }
+    }
+  }
+</style>

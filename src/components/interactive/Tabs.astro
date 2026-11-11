@@ -7,9 +7,11 @@ type Props = HTMLAttributes<"div"> & {
   /** Set to `false` to omit the component. */
   render?: boolean;
   /** Tab layout. */
-  variant?: "horizontal" | "side";
+  variant?: "horizontal" | "compact" | "split" | "side";
   /** Panel playback. */
   playback?: "manual" | "auto";
+  /** Panel transition timing. */
+  motion?: "default" | "gentle";
   /** Show all panels in design mode. */
   preview?: boolean;
 };
@@ -18,6 +20,7 @@ const {
   render = true,
   variant = "horizontal",
   playback = "manual",
+  motion = "default",
   preview = false,
   class: className,
   ...rest
@@ -35,12 +38,14 @@ const panels = await slotContent(Astro.slots);
       "tabs_wrap",
       variant !== "horizontal" && variant,
       auto && "auto",
+      motion === "gentle" && "gentle",
       preview && "preview",
       className,
     ]}
     {...rest}
   >
     <div class="tabs_bar">
+      <slot name="intro" />
       <div
         class="tabs_links"
         role="tablist"
@@ -86,12 +91,15 @@ const panels = await slotContent(Astro.slots);
 {}
 <noscript>
   <style>
-    .tabs_bar,
+    .tabs_links,
     .tabs_controls {
       display: none;
     }
     .tabs_wrap {
       grid-template-columns: none;
+    }
+    .tabs_bar:not(:has(> :not(.tabs_links))) {
+      display: none;
     }
     .tabs_panels {
       gap: var(--space-6);
@@ -107,10 +115,14 @@ const panels = await slotContent(Astro.slots);
 </noscript>
 
 <script>
-  const INTERVAL = 6000;
-  const SLIDE = 500;
-
   for (const tabs of document.querySelectorAll<HTMLElement>(".tabs_wrap")) {
+    const style = getComputedStyle(tabs);
+    const milliseconds = (name: string) => {
+      const value = style.getPropertyValue(name).trim();
+      return parseFloat(value) * (value.endsWith("ms") ? 1 : 1000);
+    };
+    const INTERVAL = milliseconds("--_interval");
+    const SLIDE = milliseconds("--_slide");
     const links = [...tabs.querySelectorAll<HTMLButtonElement>(".tabs_link")];
     const panelList = tabs.querySelector<HTMLElement>(".tabs_panels");
     const panels = [...(panelList?.children ?? [])] as HTMLElement[];
@@ -189,9 +201,11 @@ const panels = await slotContent(Astro.slots);
         link.setAttribute("aria-selected", String(i === index));
         link.tabIndex = i === index ? 0 : -1;
       });
-      panels.forEach((panel, i) =>
-        panel.classList.toggle("is-active", i === index),
-      );
+      panels.forEach((panel, i) => {
+        if (i === index) panel.classList.remove("is-leaving");
+        panel.classList.toggle("is-active", i === index);
+        panel.inert = i !== index;
+      });
 
       current = index;
       if (share) remember(index);
@@ -280,16 +294,41 @@ const panels = await slotContent(Astro.slots);
   @layer components {
     .tabs_wrap {
       --_dir: 1;
-      --_interval: 6s;
-      --_slide: 500ms;
+      --_interval: var(--tabs-interval);
+      --_slide: var(--tabs-duration);
       display: grid;
       gap: var(--space-6);
       width: 100%;
 
+      &.gentle {
+        --_slide: var(--illustration-duration);
+      }
+
       &.side {
         @media (width >= 48rem) {
           grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-          align-items: start;
+          align-items: stretch;
+        }
+      }
+      &.split.is-ready {
+        @media (width >= 64rem) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-rows: auto 1fr;
+          column-gap: var(--section-space-small);
+          & .tabs_bar {
+            grid-area: 1 / 1;
+            position: relative;
+            z-index: 1;
+          }
+          & .tabs_panels {
+            grid-area: 1 / 1 / 3 / 3;
+            grid-template-columns: subgrid;
+            grid-template-rows: subgrid;
+            overflow: visible;
+          }
+          & .tabs_panels > * {
+            grid-area: 1 / 1 / 3 / 3;
+          }
         }
       }
     }
@@ -298,6 +337,7 @@ const panels = await slotContent(Astro.slots);
       display: flex;
       flex-direction: column;
       min-width: 0;
+      gap: var(--space-6);
     }
 
     .tabs_links {
@@ -318,14 +358,20 @@ const panels = await slotContent(Astro.slots);
       padding-block: var(--space-3);
       background: none;
       border-bottom: var(--border-width) solid var(--border);
-      color: color-mix(in lab, currentcolor 60%, transparent);
+      color: var(--text-2);
       text-align: center;
+      .tabs_wrap:is(.compact, .split) & {
+        min-width: 0;
+      }
       transition:
         color var(--hover-duration) var(--hover-ease),
         border-color var(--hover-duration) var(--hover-ease);
       &.is-active {
         border-bottom-color: var(--text);
         color: var(--text);
+      }
+      &:focus-visible {
+        outline-offset: var(--focus-offset-inner);
       }
       @media (hover: hover) {
         &:hover {
@@ -414,7 +460,7 @@ const panels = await slotContent(Astro.slots);
       animation: none;
     }
 
-    .tabs_wrap.auto[data-moved] .tabs_panels > * {
+    .tabs_wrap:is(.auto, .gentle)[data-moved] .tabs_panels > * {
       &.is-active {
         animation: tabs-in var(--_slide) var(--open-ease) both;
       }
@@ -432,6 +478,31 @@ const panels = await slotContent(Astro.slots);
       to {
         translate: 0 0;
         opacity: 1;
+      }
+    }
+
+    .tabs_wrap.split[data-moved] .tabs_panels > * {
+      &.is-active {
+        animation-name: tabs-fade-in;
+      }
+      &.is-leaving {
+        animation-name: tabs-fade-out;
+      }
+    }
+    @keyframes tabs-fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes tabs-fade-out {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
       }
     }
 

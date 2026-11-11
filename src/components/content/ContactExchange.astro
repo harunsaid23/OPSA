@@ -1,0 +1,149 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+interface Props extends HTMLAttributes<"figure"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{render && (
+  <figure class:list={["contact-exchange_wrap", className]} {...rest}>
+    <div class="contact-exchange_artboard">
+      <svg
+        class="contact-exchange_visual"
+        viewBox="0 0 520 440"
+        fill="none"
+        role="img"
+        aria-label="An open envelope and a returning line represent a conversation"
+      >
+        <path
+          class="contact-exchange_echo"
+          d="M98 149C40 149 38 60 102 60h256c92 0 115 112 61 156"
+        />
+        <path
+          class="contact-exchange_surface"
+          d="m104 210 156-114 156 114v162a16 16 0 0 1-16 16H120a16 16 0 0 1-16-16Z"
+        />
+        <path
+          class="contact-exchange_paper"
+          d="M150 241V112a12 12 0 0 1 12-12h196a12 12 0 0 1 12 12v129l-110 76Z"
+        />
+        <path
+          class="contact-exchange_words"
+          d="M185 147h84M185 172h150M185 197h112"
+        />
+        <path
+          class="contact-exchange_front"
+          d="m104 210 156 107 156-107v162a16 16 0 0 1-16 16H120a16 16 0 0 1-16-16Z"
+        />
+        <path
+          class="contact-exchange_trace"
+          pathLength="100"
+          d="M104 210v162a16 16 0 0 0 16 16h280a16 16 0 0 0 16-16V210L260 317Z"
+        />
+        <path class="contact-exchange_seam" d="m112 380 107-91m82 0 107 91" />
+        <path
+          class="contact-exchange_reply"
+          pathLength="100"
+          d="M420 275h24c55 0 60-102 0-102h-39m18-18-18 18 18 18"
+        />
+        <circle class="contact-exchange_point" cx="260" cy="317" r="6" />
+      </svg>
+    </div>
+    <figcaption>
+      <ContentWrapper centered>
+        <Heading tag="h2" variant="h4">
+          Let’s connect.
+        </Heading>
+        <Paragraph>A conversation can bring us together.</Paragraph>
+      </ContentWrapper>
+    </figcaption>
+  </figure>
+)}
+<script>
+  import {
+    enterIllustration,
+    illustrationMotion,
+  } from "@/utils/illustrationMotion";
+  document
+    .querySelectorAll<HTMLElement>(".contact-exchange_wrap")
+    .forEach((figure) => {
+      const motion = illustrationMotion(figure);
+      enterIllustration(figure, () =>
+        [
+          ...figure.querySelectorAll(
+            ".contact-exchange_trace, .contact-exchange_reply",
+          ),
+        ].map((path, i) =>
+          path.animate(
+            [{ strokeDashoffset: "100" }, { strokeDashoffset: "0" }],
+            {
+              duration: motion.traceDuration,
+              delay: i * motion.duration,
+              easing: motion.traceEase,
+              fill: "backwards",
+            },
+          ),
+        ),
+      );
+    });
+</script>
+<style is:global>
+  @layer components {
+    .contact-exchange_wrap {
+      width: 100%;
+      max-width: var(--illustration-max-width);
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      & .contact-exchange_artboard {
+        container-type: inline-size;
+        aspect-ratio: 13 / 11;
+      }
+      & .contact-exchange_visual {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      & .contact-exchange_echo {
+        stroke: var(--accent-sky);
+        stroke-opacity: 0.25;
+      }
+      & .contact-exchange_surface,
+      & .contact-exchange_front {
+        fill: var(--background-2);
+        stroke: var(--border);
+      }
+      & .contact-exchange_paper {
+        fill: var(--background);
+        stroke: var(--accent-sky);
+        stroke-width: 2;
+      }
+      & .contact-exchange_words,
+      & .contact-exchange_seam {
+        stroke: var(--accent-sky);
+        stroke-linecap: round;
+        stroke-width: 2;
+      }
+      & .contact-exchange_seam {
+        stroke-opacity: 0.4;
+      }
+      & .contact-exchange_trace,
+      & .contact-exchange_reply {
+        stroke: var(--accent-sky);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 100 100;
+      }
+      & .contact-exchange_point {
+        fill: var(--accent-care);
+      }
+    }
+  }
+</style>

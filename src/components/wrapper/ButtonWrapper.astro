@@ -34,3 +34,22 @@ const content = await slotContent(Astro.slots);
     <Fragment set:html={content} />
   </div>
 )}
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>(".button-wrapper")
+    .forEach((wrapper) => {
+      if (wrapper.children.length < 2 || !wrapper.parentElement) return;
+      const update = () => {
+        wrapper.removeAttribute("data-stacked");
+        const buttons = [...wrapper.children];
+        const first = buttons[0].getBoundingClientRect();
+        const wrapped = buttons
+          .slice(1)
+          .some((button) => button.getBoundingClientRect().top >= first.bottom);
+        wrapper.toggleAttribute("data-stacked", wrapped);
+      };
+      new ResizeObserver(update).observe(wrapper.parentElement);
+      document.fonts.ready.then(update);
+    });
+</script>

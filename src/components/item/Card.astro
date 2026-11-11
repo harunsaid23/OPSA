@@ -7,8 +7,19 @@ import Button from "@/components/Button.astro";
 import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
 import Img from "@/components/media/Img.astro";
 import Overlay from "@/components/media/Overlay.astro";
+import { slotContent } from "@/utils/slots.ts";
 
-type CardSymbol = "people" | "community" | "voice";
+type CardSymbol =
+  | "people"
+  | "community"
+  | "voice"
+  | "purpose"
+  | "stewardship"
+  | "evidence"
+  | "target"
+  | "connected"
+  | "daily"
+  | "foundation";
 
 type ImageSource = ImageMetadata | string;
 
@@ -27,6 +38,8 @@ type Base = HTMLAttributes<"div"> & {
   buttonLabel?: string;
   /** Button destination. Omit for a `<button>`. */
   buttonHref?: string;
+  /** Button visual emphasis. Defaults to the card variant’s emphasis. */
+  buttonEmphasis?: "primary" | "secondary";
   /** Card layout. */
   variant?:
     "default" | "cover" | "stacked" | "feature" | "statement" | "profile";
@@ -83,6 +96,7 @@ const {
   text,
   buttonLabel,
   buttonHref,
+  buttonEmphasis,
   variant = "default",
   symbol,
   theme = "inherit",
@@ -97,13 +111,24 @@ const hasImage =
   !!image;
 const hasProfilePlaceholder = variant === "profile" && !image;
 const symbols: Record<CardSymbol, string> = {
+  target: "M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5M7 12h10M12 7v10",
+  connected:
+    "M12 3a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM5 16a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM19 16a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM12 9v4M5 16v-3h14v3",
+  daily:
+    "M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2ZM7 2v4M17 2v4M3 9h18M7 13h2M13 13h2M7 17h2",
+  foundation: "M3 15h8v6H3v-6ZM13 15h8v6h-8v-6ZM8 7h8v6H8V7ZM3 3h18",
   people:
     "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z",
   community: "m3 10 9-7 9 7M5 9v12h14V9M12 11v6M9 14h6",
   voice:
     "M3 10v4h4l6 4V6l-6 4H3ZM16 9a5 5 0 0 1 0 6M19 6a9 9 0 0 1 0 12M6 14l2 7h3l-2-6",
+  purpose:
+    "M12 21S3 15.5 3 9a4.5 4.5 0 0 1 9-1 4.5 4.5 0 0 1 9 1c0 6.5-9 12-9 12Z",
+  stewardship: "m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6l8-4ZM8 12l3 3 5-6",
+  evidence: "M6 3h12v18H6V3ZM9 7h6M9 11h6M9 16l2 2 4-4",
 };
-const hasContent = !!(eyebrow || heading || text || buttonLabel);
+const footer = await slotContent(Astro.slots, "footer");
+const hasContent = !!(eyebrow || heading || text || buttonLabel || footer);
 const hasTheme =
   variant !== "stacked" && variant !== "profile" && theme !== "inherit";
 
@@ -112,7 +137,10 @@ const hasTheme =
 const buttonKind =
   variant === "stacked"
     ? ({ variant: "link" } as const)
-    : ({ emphasis: variant === "cover" ? "primary" : "secondary" } as const);
+    : ({
+        emphasis:
+          buttonEmphasis ?? (variant === "cover" ? "primary" : "secondary"),
+      } as const);
 
 if (import.meta.env.DEV && render) {
   if ((variant === "stacked" || variant === "profile") && theme !== "inherit") {
@@ -214,6 +242,11 @@ if (import.meta.env.DEV && render) {
             <Button {...buttonKind}>{buttonLabel}</Button>
           )}
         </ButtonWrapper>
+        {footer && (
+          <div class="card_footer margin-trim">
+            <Fragment set:html={footer} />
+          </div>
+        )}
       </div>
     )}
   </div>
@@ -230,13 +263,13 @@ if (import.meta.env.DEV && render) {
       flex-direction: column;
       gap: var(--_padding);
       position: relative;
-      background-color: var(--background-2);
+      background-color: var(--card-background, var(--background-2));
+      border: var(--border-width) solid var(--border);
       border-radius: var(--radius-main);
       overflow: clip;
 
       &.feature {
-        background-color: var(--background);
-        border: var(--border-width) solid var(--border);
+        background-color: var(--card-feature-background);
       }
       &.statement {
         --_padding: var(--space-6);
@@ -247,6 +280,7 @@ if (import.meta.env.DEV && render) {
         min-height: var(--_min-height);
       }
       &:is(.stacked, .profile) {
+        border: 0;
         background-color: transparent;
         overflow: visible;
       }
@@ -256,7 +290,7 @@ if (import.meta.env.DEV && render) {
       width: 2.5rem;
       height: 2.5rem;
       color: var(--heading-accent);
-      margin-bottom: var(--space-6);
+      margin-bottom: var(--space-5);
     }
     .card_visual {
       position: relative;
@@ -308,6 +342,12 @@ if (import.meta.env.DEV && render) {
     .card_content > .button-wrapper:last-child {
       margin-top: auto;
       padding-top: var(--space-6);
+    }
+
+    .card_footer {
+      margin-top: auto;
+      padding-top: var(--space-5);
+      width: 100%;
     }
 
     .card_content {

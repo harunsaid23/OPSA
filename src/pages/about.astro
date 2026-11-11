@@ -1,0 +1,139 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Card from "@/components/item/Card.astro";
+import PriorityList from "@/components/content/PriorityList.astro";
+import CarePromise from "@/components/content/CarePromise.astro";
+import OntarioVoice from "@/components/content/OntarioVoice.astro";
+import { values } from "@/data/opsa";
+---
+
+<Layout
+  title="About OPSA"
+  description="A provincial voice for specialist-led, image-guided pain care. Learn about OPSA’s mission, values and founding membership."
+>
+  <!-- Hero -->
+  <Section theme="dark">
+    <ContentWrapper variant="columns-wide">
+      <Eyebrow>About OPSA</Eyebrow>
+      <Heading tag="h1" class="heading-accent" maxWidth={20}>
+        One provincial voice.
+        <br />
+        <strong>Pain care that helps.</strong>
+      </Heading>
+      <Paragraph variant="large" maxWidth={55}>
+        Bringing Ontario’s pain specialists, patients and communities together
+        to advocate for better pain care.
+      </Paragraph>
+      <ButtonWrapper>
+        <Button
+          element="link"
+          href="/membership/#register"
+          variant="directional"
+        >
+          Help build OPSA
+        </Button>
+      </ButtonWrapper>
+      <OntarioVoice slot="column2" />
+    </ContentWrapper>
+  </Section>
+  <!-- Why OPSA -->
+  <Section>
+    <ContentWrapper variant="columns-text-wide">
+      <Eyebrow slot="intro">Why OPSA</Eyebrow>
+      <Heading variant="h3" maxWidth={17}>
+        A shared voice for a shared standard.
+      </Heading>
+
+      <Paragraph slot="column2">
+        People living with pain deserve care that helps them return to work,
+        family and community. Ontario’s pain specialists see the difference that
+        safe, evidence-based care can make.
+      </Paragraph>
+      <Paragraph slot="column2">
+        OPSA brings the perspectives of specialists, patients and caregivers to
+        government, health organizations, hospitals and elected officials.
+      </Paragraph>
+      <Paragraph slot="column2">
+        We champion specialist-led, holistic pain care: interventional
+        procedures performed under image guidance by appropriately trained pain
+        specialists, as part of a plan that includes medical management,
+        rehabilitation and psychological support.
+      </Paragraph>
+    </ContentWrapper>
+  </Section>
+  <!-- Mission -->
+  <Section class="background-2">
+    <ContentWrapper variant="columns">
+      <Eyebrow>Our mission</Eyebrow>
+      <Heading maxWidth={23}>People living with pain can get better.</Heading>
+      <Paragraph class="measure-main">
+        We advocate for pain care led by trained specialists, with image-guided
+        procedures as part of a plan that includes medical management,
+        rehabilitation and psychological support.
+      </Paragraph>
+      <Paragraph class="measure-main">
+        Working with patients, caregivers and health system partners, we want
+        people to live with less pain and take part in work, family and
+        community life.
+      </Paragraph>
+      <CarePromise slot="column2" />
+    </ContentWrapper>
+  </Section>
+  <!-- Formation -->
+  <Section>
+    <ContentWrapper variant="sticky-content">
+      <Eyebrow>From intention to action</Eyebrow>
+      <Heading>How OPSA is being built</Heading>
+      <Paragraph>
+        OPSA is being incorporated as a membership-funded not-for-profit.
+        Founding members will help shape its direction.
+      </Paragraph>
+      <PriorityList
+        slot="column2"
+        items={[
+          {
+            heading: "Bring people together",
+            text: "Connect pain specialists, clinic leaders, patients, caregivers and community partners across Ontario.",
+          },
+          {
+            heading: "Establish the association",
+            text: "Complete incorporation as a not-for-profit and build the foundations for member-led advocacy.",
+          },
+          {
+            heading: "Set shared priorities",
+            text: "Build a common agenda for specialist-led, image-guided care, informed by patient experience.",
+          },
+          {
+            heading: "Establish our board",
+            text: "Recruit OPSA's founding membership and transition into a Board of Directors with a complementary subcommittee.",
+          },
+        ]}
+      />
+    </ContentWrapper>
+  </Section>
+  <!-- Values -->
+  <Section theme="dark">
+    <ContentWrapper>
+      <Eyebrow>What guides us</Eyebrow>
+      <Heading>Our values</Heading>
+    </ContentWrapper>
+    <Grid medium={2} large={3}>
+      {values.map((item) => (
+        <Card
+          variant="feature"
+          heading={item.heading}
+          text={item.text}
+          symbol={item.symbol}
+        />
+      ))}
+    </Grid>
+  </Section>
+</Layout>

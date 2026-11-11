@@ -43,6 +43,34 @@
   --open-duration: var(--hover-duration);
   --open-ease: var(--hover-ease);
 
+  /* Illustrations */
+  --illustration-duration: 1400ms;
+  --illustration-stagger: 85ms;
+  --illustration-ease: ease;
+  --illustration-assemble-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --illustration-trace-duration: 3200ms;
+  --illustration-trace-delay: 1600ms;
+  --illustration-trace-ease: ease-in-out;
+  --illustration-max-width: 34rem;
+  --illustration-compact-width: 24rem;
+  --illustration-label-size: 0.875rem;
+  --illustration-title-size: 1.625rem;
+  --tabs-duration: 500ms;
+  --tabs-interval: 6000ms;
+
+  /* Shared component dimensions */
+  --target-size: 2.75rem;
+  --brand-nav-width: 10rem;
+  --brand-footer-width: 15rem;
+  --icon-size: 1.5rem;
+  --marker-size: 0.5rem;
+  --control-gap: 0.5em;
+  --control-padding-block: 0.75em;
+  --control-padding-inline: 1.5em;
+  --control-inline-padding-block: 0.4em;
+  --choice-gap: 0.75em;
+  --choice-mark-inset: 0.15em;
+
   /* Radius */
   --radius-small: 0.5rem;
   --radius-main: 1rem;
@@ -54,6 +82,8 @@
 
   /* Max width */
   --max-width-small: 70rem;
+  --max-width-reading: 56rem;
+  --text-measure-main: 64ch;
   --max-width-main: calc(var(--viewport-max) / 16 * 1rem);
   --max-width-full: 100%;
 
@@ -243,6 +273,8 @@
   --background-2: var(--light-200);
   --background-3: var(--light-100);
   --background-skeleton: color-mix(in lab, currentcolor 10%, transparent);
+  --card-background: var(--background-2);
+  --card-feature-background: var(--background);
   --text: var(--dark-900);
   --text-2: color-mix(in lab, currentcolor 78%, transparent);
   --border: color-mix(in lab, var(--text) 20%, transparent);
@@ -279,6 +311,8 @@
   --background-2: var(--dark-800);
   --background-3: var(--dark-700);
   --background-skeleton: color-mix(in lab, currentcolor 10%, transparent);
+  --card-background: var(--background-2);
+  --card-feature-background: var(--background-2);
   --text: var(--light-100);
   --text-2: color-mix(in lab, currentcolor 78%, transparent);
   --border: color-mix(in lab, var(--text) 20%, transparent);
@@ -314,6 +348,8 @@
   --background-2: color-mix(in lab, var(--background) 90%, var(--text));
   --background-3: color-mix(in lab, var(--background) 80%, var(--text));
   --background-skeleton: color-mix(in lab, currentcolor 10%, transparent);
+  --card-background: var(--background-2);
+  --card-feature-background: var(--background-2);
   --text: var(--brand-text);
   --text-2: color-mix(in lab, currentcolor 60%, transparent);
   --border: color-mix(in lab, var(--text) 20%, transparent);
@@ -344,6 +380,9 @@
 
 :root,
 [class*="theme-"] {
+  --surface-highlight: color-mix(in srgb, var(--accent-sky) 24%, var(--background));
+  --field-background-hover: var(--surface-highlight);
+  --field-border-hover: var(--heading-accent);
   background-color: var(--background);
   color: var(--text);
 }

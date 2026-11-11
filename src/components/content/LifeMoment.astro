@@ -1,0 +1,84 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { getImage } from "astro:assets";
+import lifeIllustration from "@/assets/life-beyond-pain.png";
+interface Props extends HTMLAttributes<"figure"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Moment shown in the illustration. */
+  moment: "outdoors" | "work" | "together";
+}
+const {
+  render = true,
+  moment,
+  class: className,
+  ...rest
+} = Astro.props;
+const moments = {
+  outdoors: {
+    index: 0,
+    alt: "Illustration of two adults walking beside a lake, one using a cane.",
+  },
+  work: {
+    index: 1,
+    alt: "Illustration of a person working at a desk beside an open window.",
+  },
+  together: {
+    index: 2,
+    alt: "Illustration of a family sharing time around an outdoor table.",
+  },
+};
+const scene = moments[moment];
+const image =
+  render && scene
+    ? await getImage({
+        src: lifeIllustration,
+        format: "webp",
+        quality: 85,
+        width: 2172,
+      })
+    : undefined;
+---
+
+{render && scene && image && (
+  <figure class:list={["life-moment_wrap", className]} {...rest}>
+    <div class="life-moment_window">
+      <img
+        class="life-moment_image"
+        src={image.src}
+        {...image.attributes}
+        alt={scene.alt}
+        loading="lazy"
+        decoding="async"
+        style={`--_position: ${scene.index * -100}%`}
+      />
+    </div>
+  </figure>
+)}
+
+<style is:global>
+  @layer components {
+    .life-moment_wrap {
+      width: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      & .life-moment_window {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 4 / 3;
+        border-radius: var(--radius-main);
+        background: var(--background-2);
+      }
+      & .life-moment_image {
+        position: absolute;
+        top: 50%;
+        left: var(--_position);
+        width: 300%;
+        max-width: none;
+        height: auto;
+        transform: translateY(-50%);
+      }
+    }
+  }
+</style>

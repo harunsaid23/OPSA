@@ -1,0 +1,162 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Form from "@/components/form/Form.astro";
+import Input from "@/components/form/Input.astro";
+import Textarea from "@/components/form/Textarea.astro";
+import Choice from "@/components/form/Choice.astro";
+import { CONTACT_EMAIL, EMAIL_DRAFT_MESSAGE } from "@/consts";
+import Card from "@/components/item/Card.astro";
+import LifeMoment from "@/components/content/LifeMoment.astro";
+import PatientVoice from "@/components/content/PatientVoice.astro";
+import Tabs from "@/components/interactive/Tabs.astro";
+import TabLink from "@/components/interactive/TabLink.astro";
+---
+
+<Layout
+  title="Patient voices"
+  description="Share your experience of pain care. OPSA brings the voices of Ontario patients and caregivers into conversations about better care."
+>
+  <!-- Hero -->
+  <Section theme="dark">
+    <ContentWrapper variant="columns">
+      <Eyebrow>Patient voices</Eyebrow>
+      <Heading tag="h1" class="heading-accent" maxWidth={20}>
+        Your experience
+        <br />
+        <strong>belongs here.</strong>
+      </Heading>
+      <Paragraph variant="large" maxWidth={58}>
+        Living with pain affects more than health. Your experiences of work,
+        family and everyday life can help inform better pain care in Ontario.
+      </Paragraph>
+      <ButtonWrapper>
+        <Button element="link" href="#share" variant="directional">
+          Share your story
+        </Button>
+      </ButtonWrapper>
+      <PatientVoice slot="column2" />
+    </ContentWrapper>
+  </Section>
+  <!-- Life beyond pain -->
+  <Section>
+    <Tabs
+      id="life-beyond-pain"
+      variant="side"
+      motion="gentle"
+      aria-label="Explore life beyond pain"
+    >
+      <ContentWrapper slot="intro">
+        <Heading>Life beyond pain</Heading>
+        <Paragraph>The everyday moments that matter.</Paragraph>
+      </ContentWrapper>
+      <TabLink slot="links">Time outdoors</TabLink>
+      <TabLink slot="links">Meaningful work</TabLink>
+      <TabLink slot="links">Being together</TabLink>
+      <LifeMoment moment="outdoors" />
+      <LifeMoment moment="work" />
+      <LifeMoment moment="together" />
+    </Tabs>
+  </Section>
+  <!-- Participation -->
+  <Section class="background-2">
+    <ContentWrapper variant="columns-text">
+      <Eyebrow slot="intro">Listening comes first</Eyebrow>
+      <Heading variant="h3" maxWidth={17}>
+        Help others understand what matters.
+      </Heading>
+      <Paragraph slot="column2">
+        We welcome patients, caregivers and advocates who want to share their
+        perspective. Stories will only be published with permission.
+      </Paragraph>
+    </ContentWrapper>
+    <Grid large={3}>
+      <Card
+        variant="feature"
+        symbol="daily"
+        heading="What has pain changed?"
+        text="Tell us how pain has affected your everyday life, from work and family to the activities you value."
+      />
+      <Card
+        variant="feature"
+        symbol="purpose"
+        heading="What has helped you?"
+        text="Share how care and support have helped you, or someone you care for, take part in everyday life."
+      />
+      <Card
+        variant="feature"
+        symbol="voice"
+        heading="What needs to change?"
+        text="Share the barriers and priorities decision-makers should understand to improve pain care across Ontario."
+      />
+    </Grid>
+  </Section>
+  <!-- Story form -->
+  <Section id="share" class="background-2">
+    <ContentWrapper variant="sticky-content">
+      <Eyebrow>In your own words</Eyebrow>
+      <Heading>Share your experience.</Heading>
+      <Paragraph>
+        Share only what you are comfortable sharing. Please leave out medical
+        records, identifying details about other people and other sensitive
+        information. This form is not for medical advice.
+      </Paragraph>
+      <Form
+        slot="column2"
+        name="OPSA patient story"
+        action={`mailto:${CONTACT_EMAIL}`}
+        successMessage={EMAIL_DRAFT_MESSAGE}
+        aria-label="Share your story"
+      >
+        <Grid medium={2}>
+          <Input
+            label="Full name"
+            name="name"
+            autocomplete="name"
+            required
+            maxlength={120}
+          />
+          <Input
+            label="Email"
+            variant="email"
+            name="email"
+            required
+            maxlength={254}
+          />
+        </Grid>
+        <Input
+          label="City or region (optional)"
+          name="region"
+          maxlength={120}
+        />
+        <Textarea
+          label="Your story"
+          name="story"
+          placeholder="What would you like others to understand?"
+          required
+          maxlength={3000}
+          minLines={6}
+        />
+        <Choice
+          label="I agree to be contacted about my story. I understand that sharing it here is not permission to publish it."
+          name="consent"
+          value="yes"
+          required
+        />
+        <Button type="submit">Continue in email</Button>
+        <Paragraph variant="small">
+          Submitting opens a draft in your email app. Review it and press Send
+          to complete your request. If it does not open, email{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> directly.
+        </Paragraph>
+      </Form>
+    </ContentWrapper>
+  </Section>
+</Layout>

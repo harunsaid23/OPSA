@@ -9,7 +9,11 @@ import Heading from "@/components/typography/Heading.astro";
 import Paragraph from "@/components/typography/Paragraph.astro";
 import Button from "@/components/Button.astro";
 import Grid from "@/components/wrapper/Grid.astro";
-import { MEMBERSHIP_ENDPOINT, CONTACT_EMAIL } from "@/consts.ts";
+import {
+  MEMBERSHIP_ENDPOINT,
+  CONTACT_EMAIL,
+  EMAIL_DRAFT_MESSAGE,
+} from "@/consts.ts";
 interface Props extends HTMLAttributes<"div"> {
   /** Set to `false` to omit the component. */
   render?: boolean;
@@ -37,6 +41,12 @@ const roles = [
       Register your interest
     </Heading>
     <Paragraph variant="small">Be part of the founding membership.</Paragraph>
+    {usesEmail && (
+      <Paragraph variant="small">
+        Submitting opens a draft in your email app. Review it and press Send to
+        register your interest.
+      </Paragraph>
+    )}
     {!action && (
       <p class="membership-form_notice text-style-small">
         Online registration is not open yet. Please check back for membership
@@ -45,10 +55,11 @@ const roles = [
     )}
     <Form
       name="OPSA founding membership"
+      variant="default"
       action={action}
       successMessage={
         usesEmail
-          ? "Your email draft has opened. Please send it from your email app to register your interest."
+          ? EMAIL_DRAFT_MESSAGE
           : "Thank you for your interest. Your enquiry has been received."
       }
       errorMessage="Your enquiry could not be sent. Your details are still here; please try again."
@@ -113,6 +124,9 @@ const roles = [
 <style is:global>
   @layer components {
     .membership-form_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
       width: 100%;
       padding: var(--space-6);
       border-radius: var(--radius-main);

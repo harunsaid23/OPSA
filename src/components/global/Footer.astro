@@ -1,5 +1,11 @@
 ---
-import { SITE_NAME, CONTACT_EMAIL, NAV_LINKS } from "@/consts.ts";
+import {
+  SITE_NAME,
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  CONTACT_PHONE_HREF,
+  FOOTER_LINKS,
+} from "@/consts.ts";
 import Brand from "@/components/content/Brand.astro";
 interface Props {
   /** Set to `false` to omit the component. */
@@ -26,16 +32,13 @@ const { render = true } = Astro.props;
         </div>
         <div class="footer_contact">
           <h2 class="footer_title text-style-h6">Contact OPSA</h2>
-          {CONTACT_EMAIL ? (
-            <a class="footer_email" href={`mailto:${CONTACT_EMAIL}`}>
-              {CONTACT_EMAIL}
-            </a>
-          ) : (
-            <p class="footer_description text-style-small">
-              Contact details will be published as OPSA is established.
-            </p>
-          )}
-          <a class="footer_link" href="/#join">
+          <a class="footer_email" href={`mailto:${CONTACT_EMAIL}`}>
+            {CONTACT_EMAIL}
+          </a>
+          <a class="footer_link" href={CONTACT_PHONE_HREF}>
+            {CONTACT_PHONE}
+          </a>
+          <a class="footer_link" href="/membership/#register">
             Founding membership enquiries ↗
           </a>
         </div>
@@ -46,18 +49,13 @@ const { render = true } = Astro.props;
         </p>
         <nav aria-label="Footer">
           <ul class="footer_links">
-            {NAV_LINKS.map((link) => (
+            {FOOTER_LINKS.map((link) => (
               <li>
                 <a class="footer_link" href={link.href}>
                   {link.label}
                 </a>
               </li>
             ))}
-            <li>
-              <a class="footer_link" href="/#join">
-                Membership
-              </a>
-            </li>
           </ul>
         </nav>
       </div>
@@ -72,6 +70,14 @@ const { render = true } = Astro.props;
       padding: var(--section-space-small) var(--site-margin) var(--space-6);
       background: var(--background);
       color: var(--text);
+      @media (pointer: coarse) {
+        .footer_link,
+        .footer_email {
+          display: inline-flex;
+          align-items: center;
+          min-height: var(--target-size);
+        }
+      }
     }
     .footer_inner {
       width: 100%;
@@ -94,7 +100,7 @@ const { render = true } = Astro.props;
     }
     .footer_logo {
       display: block;
-      width: 15rem;
+      width: var(--brand-footer-width);
       max-width: 100%;
     }
     .footer_description {

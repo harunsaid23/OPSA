@@ -1,0 +1,140 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+interface Props extends HTMLAttributes<"figure"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{render && (
+  <figure class:list={["patient-voice_wrap", className]} {...rest}>
+    <div class="patient-voice_artboard">
+      <svg
+        class="patient-voice_visual"
+        viewBox="0 0 520 410"
+        fill="none"
+        role="img"
+        aria-label="An opening speech bubble makes space for patient and caregiver voices"
+      >
+        <path
+          class="patient-voice_echo"
+          d="M92 42h348a32 32 0 0 1 32 32v184a32 32 0 0 1-32 32h-28v60l-74-60"
+        />
+        <path
+          class="patient-voice_surface"
+          d="M58 77h334a32 32 0 0 1 32 32v178a32 32 0 0 1-32 32H164l-74 60v-60H58a32 32 0 0 1-32-32V109a32 32 0 0 1 32-32Z"
+        />
+        <path
+          class="patient-voice_outline"
+          pathLength="100"
+          d="M90 379v-60H58a32 32 0 0 1-32-32V109a32 32 0 0 1 32-32h334a32 32 0 0 1 32 32v178a32 32 0 0 1-32 32H164Z"
+        />
+        <g class="patient-voice_quote">
+          <path d="M158 220h44v-46h-22c0-22 8-35 23-44l-10-15c-26 13-40 36-40 67v33a5 5 0 0 0 5 5Z" />
+          <path d="M244 220h44v-46h-22c0-22 8-35 23-44l-10-15c-26 13-40 36-40 67v33a5 5 0 0 0 5 5Z" />
+        </g>
+        <path
+          class="patient-voice_words"
+          pathLength="100"
+          d="M153 258h142M153 279h94"
+        />
+      </svg>
+    </div>
+    <figcaption>
+      <ContentWrapper centered>
+        <Heading tag="h2" variant="h4">
+          Your voice matters.
+        </Heading>
+        <Paragraph>There is space for your experience.</Paragraph>
+      </ContentWrapper>
+    </figcaption>
+  </figure>
+)}
+
+<script>
+  import {
+    enterIllustration,
+    illustrationMotion,
+  } from "@/utils/illustrationMotion";
+  document
+    .querySelectorAll<HTMLElement>(".patient-voice_wrap")
+    .forEach((figure) => {
+      const motion = illustrationMotion(figure);
+      enterIllustration(figure, () => [
+        ...[
+          ...figure.querySelectorAll(
+            ".patient-voice_outline, .patient-voice_words",
+          ),
+        ].map((path, index) =>
+          path.animate(
+            [{ strokeDashoffset: "100" }, { strokeDashoffset: "0" }],
+            {
+              duration: motion.traceDuration,
+              delay: index * motion.duration,
+              easing: motion.traceEase,
+              fill: "backwards",
+            },
+          ),
+        ),
+        figure.querySelector(".patient-voice_quote")!.animate(
+          [
+            { opacity: 0.2, transform: "translateY(4%)" },
+            { opacity: 1, transform: "translateY(0)" },
+          ],
+          {
+            duration: motion.duration,
+            delay: motion.duration,
+            easing: motion.ease,
+            fill: "backwards",
+          },
+        ),
+      ]);
+    });
+</script>
+
+<style is:global>
+  @layer components {
+    .patient-voice_wrap {
+      width: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      & .patient-voice_artboard {
+        container-type: inline-size;
+        aspect-ratio: 52 / 41;
+      }
+      & .patient-voice_visual {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      & .patient-voice_echo {
+        stroke: var(--accent-sky);
+        stroke-opacity: 0.35;
+        stroke-width: 1;
+      }
+      & .patient-voice_surface {
+        fill: var(--background-2);
+        stroke: var(--border);
+        stroke-width: 1;
+      }
+      & .patient-voice_outline,
+      & .patient-voice_words {
+        stroke: var(--accent-sky);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 100 100;
+      }
+      & .patient-voice_quote {
+        fill: var(--accent-sky);
+        transform-box: view-box;
+      }
+    }
+  }
+</style>

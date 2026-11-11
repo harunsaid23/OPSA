@@ -45,8 +45,8 @@ const { render = true, items, class: className, ...rest } = Astro.props;
     }
     .priority-list_marker {
       flex: none;
-      width: 0.5rem;
-      height: 0.5rem;
+      width: var(--marker-size);
+      height: var(--marker-size);
       margin-top: 0.5em;
       border-radius: var(--radius-round);
       background-color: var(--heading-accent);

@@ -1,0 +1,292 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import MembershipForm from "@/components/content/MembershipForm.astro";
+import MembershipFees from "@/components/content/MembershipFees.astro";
+import GrowingFoundation from "@/components/content/GrowingFoundation.astro";
+import RichText from "@/components/typography/RichText.astro";
+import Card from "@/components/item/Card.astro";
+import Accordion from "@/components/interactive/Accordion.astro";
+import AccordionItem from "@/components/interactive/AccordionItem.astro";
+import {
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  CONTACT_PHONE_HREF,
+  LETTER_PDF,
+} from "@/consts";
+---
+
+<Layout
+  title="Membership"
+  description="Become a founding member of OPSA. Read Dr. Zameer Pirani’s letter to physician colleagues and register your interest."
+>
+  <!-- Hero -->
+  <Section theme="dark">
+    <ContentWrapper variant="columns">
+      <Eyebrow>Founding membership</Eyebrow>
+      <Heading tag="h1" class="heading-accent" maxWidth={22}>
+        Help shape the future
+        <br />
+        <strong>of pain care.</strong>
+      </Heading>
+      <Paragraph variant="large" maxWidth={56}>
+        Join Ontario’s pain specialists, patients and communities in building a
+        shared voice for better care.
+      </Paragraph>
+      <ButtonWrapper>
+        <Button element="link" href="#register" variant="directional">
+          Become a founding member
+        </Button>
+        <Button element="link" href="#letter" emphasis="secondary">
+          Read our letter to physicians
+        </Button>
+      </ButtonWrapper>
+      <GrowingFoundation slot="column2" />
+    </ContentWrapper>
+  </Section>
+  <!-- Letter -->
+  <Section
+    id="letter"
+    aria-labelledby="letter-heading"
+    containerClass="max-width-reading"
+  >
+    <ContentWrapper>
+      <Eyebrow>A letter to our physician colleagues · November 8, 2026</Eyebrow>
+      <Heading id="letter-heading" maxWidth={27}>
+        An invitation to join OPSA as a founding member
+      </Heading>
+      <ButtonWrapper>
+        <Button element="link" href={LETTER_PDF} download emphasis="secondary">
+          Download the letter (PDF)
+        </Button>
+      </ButtonWrapper>
+    </ContentWrapper>
+    <RichText variant="main">
+      <p>Dear Colleagues,</p>
+      <p>
+        I am writing to physicians and clinic leaders across Ontario who already
+        provide image-guided pain care. Your practices show every day what safe,
+        specialist-led care looks like. I am inviting you to join the Ontario
+        Pain Specialist Association (OPSA), so that together we can make this
+        standard the norm and create real distinction in chronic pain medicine
+        in this province.
+      </p>
+      <p>
+        Chronic pain is a leading cause of lost work, strained families and
+        diminished quality of life, yet the care patients receive varies widely.
+        You have likely seen the consequences: patients arriving after
+        injections performed without image guidance, or by practitioners without
+        recognized training in pain medicine. Meanwhile, the value of specialist
+        pain care is not always recognized. Patients' experiences rarely inform
+        policy, and the system lacks a connected approach. Strong
+        community-based pain care, close to home, could also ease pressure on
+        our emergency departments and hospitals.
+      </p>
+      <p>
+        OPSA believes people living with pain can get better. We advocate for
+        specialist-led, image-guided pain care as the standard for every
+        Ontarian. That means:
+      </p>
+      <ul>
+        <li>
+          <strong>Image guidance:</strong> interventional procedures performed
+          under image guidance, for accuracy and safety.
+        </li>
+        <li>
+          <strong>Appropriate training:</strong> procedures performed by
+          appropriately trained pain specialists.
+        </li>
+        <li>
+          <strong>Holistic care:</strong> interventions delivered as part of a
+          comprehensive plan that includes medical management, rehabilitation
+          and psychological support where needed.
+        </li>
+      </ul>
+      <p>
+        Working with patients, caregivers, government stakeholders, and health
+        system partners, we champion safe, evidence-based care. Our goal is
+        simple: help people live their best lives with less pain, and return to
+        work, family and community.
+      </p>
+      <p>
+        Your voice carries weight with patients, policymakers and peers. I am
+        asking you to stand with us in one or more of these ways:
+      </p>
+      <ol>
+        <li>
+          <strong>Become a founding member.</strong> OPSA is being incorporated
+          as a membership-funded, not-for-profit corporation under Ontario's{" "}
+          <em>Not-for-Profit Corporations Act, 2010</em>. Founding members will
+          shape its direction from day one.
+        </li>
+        <li>
+          <strong>
+            Sign on as a supporting clinic, endorsing our position
+          </strong>{" "}
+          that specialist-led, image-guided care should be the standard of care
+          in Ontario.
+        </li>
+        <li>
+          <strong>Take on a leadership role.</strong> We are building our board
+          and leads for clinical advocacy, education, membership and community
+          engagement.
+        </li>
+        <li>
+          <strong>Spread the word</strong> among colleagues, residents, fellows
+          and partner specialties, including primary care, who share these
+          values.
+        </li>
+      </ol>
+      <p>
+        <strong>A founding financial commitment.</strong> OPSA will be funded by
+        its members, not by industry. To launch our work, I am asking each
+        founding member to pay a one-time{" "}
+        <strong>initiation fee of $400</strong>, which covers the first month,
+        followed by a <strong>monthly fee on a sliding scale</strong> based on
+        the number of members. Based on 25 founding physicians, the monthly fee
+        is about $290 (see the <a href="#membership-fees">Appendix</a>). This
+        will fund OPSA's early initiatives, including incorporation, advocacy
+        with government and health system partners, and patient and physician
+        education. Because the cost is shared, each member's contribution will
+        decrease as our membership grows.
+      </p>
+      <p>
+        Membership registration opens soon. In the meantime, please{" "}
+        <a href="#register">register your interest</a> at opsa.pages.dev, or
+        reply to me directly.
+      </p>
+      <p>
+        Ontarians living with pain should not have to wonder whether the care
+        they receive is safe or effective. With your support, OPSA can make
+        specialist-led, image-guided care the expectation rather than the
+        exception.
+      </p>
+      <p>
+        Thank you for considering this invitation. I look forward to working
+        with you.
+      </p>
+      <p>With warm regards,</p>
+      <p>
+        <strong>
+          Dr. Zameer Pirani, MD, FRCPC (Anesthesia &amp; Pain Medicine)
+        </strong>
+        <br />
+        Founder &amp; Chair Ontario Pain Specialist Association (OPSA)
+        <br />
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        <br />
+        <a href={CONTACT_PHONE_HREF}>{CONTACT_PHONE}</a>
+      </p>
+    </RichText>
+    <MembershipFees id="membership-fees" />
+    <ButtonWrapper>
+      <Button
+        element="link"
+        href="#register"
+        variant="directional"
+      >
+        Become a founding member
+      </Button>
+      <Button element="link" href="#membership-questions" emphasis="secondary">
+        Membership questions
+      </Button>
+    </ButtonWrapper>
+  </Section>
+  <!-- Membership options -->
+  <Section class="background-2">
+    <ContentWrapper>
+      <Eyebrow>A shared purpose</Eyebrow>
+      <Heading>There’s a place for you in OPSA</Heading>
+      <Paragraph maxWidth={62}>
+        Pain care is shaped by many perspectives. Register your interest and let
+        us know how you would like to be involved.
+      </Paragraph>
+    </ContentWrapper>
+    <Grid large={3}>
+      <Card
+        variant="feature"
+        symbol="evidence"
+        heading="Physicians and clinic leaders"
+        text="Help shape clinical advocacy, education and a shared standard for specialist-led, image-guided care."
+      />
+      <Card
+        variant="feature"
+        symbol="people"
+        heading="Patients and caregivers"
+        text="Bring lived experience into conversations about pain care and what better care makes possible."
+      />
+      <Card
+        variant="feature"
+        symbol="connected"
+        heading="Community and health system partners"
+        text="Connect organizations and communities working toward better pain care across Ontario."
+      />
+    </Grid>
+    <Card
+      heading="Founding physician membership"
+      text="$400 one-time initiation fee (covers the first month), then a sliding-scale monthly share of about $290 based on 25 founding physicians."
+      buttonEmphasis="primary"
+      buttonLabel="Read the letter to physicians"
+      buttonHref="#letter"
+    />
+  </Section>
+  <!-- Registration -->
+  <Section id="register" theme="dark" aria-labelledby="register-heading">
+    <ContentWrapper variant="sticky-content">
+      <Eyebrow>Register your interest</Eyebrow>
+      <Heading id="register-heading">
+        Be part of the founding membership.
+      </Heading>
+      <Paragraph>
+        Membership opens once OPSA completes incorporation. Everyone who
+        registers interest will be contacted first.
+      </Paragraph>
+      <Paragraph>
+        This form registers your interest; no payment is collected here.
+      </Paragraph>
+      <MembershipForm slot="column2" />
+    </ContentWrapper>
+  </Section>
+  <!-- FAQ -->
+  <Section id="membership-questions">
+    <ContentWrapper variant="columns">
+      <Eyebrow>Your questions</Eyebrow>
+      <Heading>Membership, explained.</Heading>
+      <Paragraph>
+        Find answers about membership, shared funding and how to register your
+        interest in OPSA.
+      </Paragraph>
+      <Accordion slot="column2">
+        <AccordionItem heading="How is OPSA funded?" open>
+          <Paragraph>
+            OPSA is funded by its members, not by industry. Founding physician
+            members pay a one-time $400 initiation fee, then a monthly share on
+            a sliding scale that falls as membership grows (about $290 per month
+            based on 25 founding physicians). Details are in our letter to
+            physician colleagues on this page.
+          </Paragraph>
+        </AccordionItem>
+        <AccordionItem heading="When does membership open?">
+          <Paragraph>
+            Membership opens once OPSA completes incorporation. Everyone who
+            registers interest will be contacted first.
+          </Paragraph>
+        </AccordionItem>
+        <AccordionItem heading="Who can register interest?">
+          <Paragraph>
+            Pain specialists, physicians, clinic leaders, patients, caregivers,
+            patient advocates, and community and health system partners are
+            invited to express their interest.
+          </Paragraph>
+        </AccordionItem>
+      </Accordion>
+    </ContentWrapper>
+  </Section>
+</Layout>

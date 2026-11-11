@@ -1,0 +1,112 @@
+---
+import type { HTMLAttributes } from "astro/types";
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{render && (
+  <div
+    class:list={["care-promise_wrap", className]}
+    aria-hidden="true"
+    {...rest}
+  >
+    <div class="care-promise_artboard">
+      <svg class="care-promise_visual" viewBox="0 0 360 280" fill="none">
+        <g class="care-promise_routes">
+          <path pathLength="100" d="M180 238C180 185 60 211 60 142" />
+          <path pathLength="100" d="M180 238V142" />
+          <path pathLength="100" d="M180 238C180 185 300 211 300 142" />
+        </g>
+        <g class="care-promise_icons">
+          <path d="M40 57h40v30H40ZM51 57v-8h18v8M40 69c12 8 28 8 40 0M57 73h6" />
+          <path d="m158 65 22-20 22 20M163 61v28h34V61M175 89V74h10v15" />
+          <circle cx="300" cy="56" r="8" />
+          <path d="M286 87v-7a14 14 0 0 1 28 0v7M281 51a7 7 0 0 0 0 14M319 51a7 7 0 0 1 0 14M274 84v-6a11 11 0 0 1 9-11M326 84v-6a11 11 0 0 0-9-11" />
+        </g>
+        <g class="care-promise_endpoints">
+          <circle cx="60" cy="142" r="3" />
+          <circle cx="180" cy="142" r="3" />
+          <circle cx="300" cy="142" r="3" />
+        </g>
+        <circle class="care-promise_point" cx="180" cy="238" r="6" />
+      </svg>
+      <div class="care-promise_labels text-style-small">
+        <span>Work</span>
+        <span>Family</span>
+        <span>Community</span>
+      </div>
+    </div>
+  </div>
+)}
+<script>
+  import {
+    enterIllustration,
+    illustrationMotion,
+  } from "@/utils/illustrationMotion";
+  document
+    .querySelectorAll<HTMLElement>(".care-promise_wrap")
+    .forEach((graphic) => {
+      const motion = illustrationMotion(graphic);
+      enterIllustration(graphic, () =>
+        [...graphic.querySelectorAll(".care-promise_routes path")].map(
+          (path, i) =>
+            path.animate(
+              [{ strokeDashoffset: "100" }, { strokeDashoffset: "0" }],
+              {
+                duration: motion.duration,
+                delay: i * motion.stagger,
+                easing: motion.ease,
+                fill: "backwards",
+              },
+            ),
+        ),
+      );
+    });
+</script>
+<style is:global>
+  @layer components {
+    .care-promise_wrap {
+      width: 100%;
+      max-width: var(--illustration-max-width);
+      margin: auto;
+      & .care-promise_artboard {
+        container-type: inline-size;
+        aspect-ratio: 9 / 7;
+        position: relative;
+      }
+      & .care-promise_visual {
+        display: block;
+        width: 100%;
+        height: 100%;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.75;
+      }
+      & .care-promise_routes {
+        stroke: var(--heading-accent);
+        stroke-dasharray: 100 100;
+      }
+      & .care-promise_icons {
+        stroke: var(--text);
+      }
+      & .care-promise_labels {
+        position: absolute;
+        inset: 29cqw 0 auto;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        text-align: center;
+        font-size: max(0.875rem, 4cqw);
+        color: var(--text);
+      }
+      & .care-promise_endpoints {
+        fill: var(--heading-accent);
+      }
+      & .care-promise_point {
+        fill: var(--accent-care);
+      }
+    }
+  }
+</style>

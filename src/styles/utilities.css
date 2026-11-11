@@ -787,6 +787,14 @@
   max-width: var(--max-width-small);
 }
 
+.measure-main {
+  --_mw: var(--text-measure-main);
+}
+
+.max-width-reading {
+  max-width: var(--max-width-reading);
+}
+
 .max-width-full {
   max-width: var(--max-width-full);
 }
@@ -922,6 +930,7 @@
 }
 
 .background-2 {
+  --card-background: var(--background);
   background-color: var(--background-2);
 }
 

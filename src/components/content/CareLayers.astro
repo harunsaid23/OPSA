@@ -1,0 +1,286 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+interface Props extends HTMLAttributes<"figure"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+const { render = true, class: className, ...rest } = Astro.props;
+const layers = [
+  {
+    label: "Image-guided procedures",
+    detail: "Delivered by trained pain specialists.",
+    x: 112,
+    y: 92,
+    route: "M232 178C178 178 178 92 148 92",
+    icon: "M-22-10v-12h12M10-22h12v12M22 10v12H10M-10 22h-12V10M-12 0h24M0-12v24",
+  },
+  {
+    label: "Medical management",
+    detail: "Part of a comprehensive care plan.",
+    x: 408,
+    y: 92,
+    route: "M288 178C342 178 342 92 372 92",
+    icon: "M-17 17a12 12 0 0 1 0-17L0-17a12 12 0 0 1 17 17L0 17a12 12 0 0 1-17 0ZM-9-9 9 9",
+  },
+  {
+    label: "Rehabilitation",
+    detail: "Support for movement and daily activities.",
+    x: 112,
+    y: 312,
+    route: "M232 226C178 226 178 312 148 312",
+    icon: "M0 23C-7 17-25 5-25-9a14 14 0 0 1 25-9 14 14 0 0 1 25 9C25 5 7 17 0 23Z",
+  },
+  {
+    label: "Psychological support",
+    detail: "Support for the emotional impact of pain.",
+    x: 408,
+    y: 312,
+    route: "M288 226C342 226 342 312 372 312",
+    icon: "M-21-18h42a6 6 0 0 1 6 6v23a6 6 0 0 1-6 6H-7l-14 12V17a6 6 0 0 1-6-6v-23a6 6 0 0 1 6-6ZM-12-3h24M-12 6H3",
+  },
+];
+---
+
+{render && (
+  <figure class:list={["care-layers_wrap", className]} {...rest}>
+    <div class="care-layers_artboard">
+      <svg
+        class="care-layers_visual"
+        viewBox="0 0 520 400"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          class="care-layers_ground"
+          d="M112 40C294-10 480 112 452 242M68 164C38 298 224 414 408 364"
+        />
+        {layers.map((layer, i) => (
+          <g class="care-layers_branch" data-care={i}>
+            <path class="care-layers_route" pathLength="100" d={layer.route} />
+            <g transform={`translate(${layer.x} ${layer.y})`}>
+              <circle class="care-layers_surface" r="42" />
+              <path class="care-layers_symbol" d={layer.icon} />
+            </g>
+          </g>
+        ))}
+        <g class="care-layers_person">
+          <path class="care-layers_body" d="M222 246v-16a38 38 0 0 1 76 0v16" />
+          <circle class="care-layers_head" cx="260" cy="161" r="22" />
+          <circle class="care-layers_heart" cx="260" cy="218" r="5" />
+        </g>
+      </svg>
+    </div>
+    <figcaption>
+      <ContentWrapper centered>
+        <Heading tag="h2" variant="h4">
+          Layers of care
+        </Heading>
+        <Paragraph>One person. A connected approach.</Paragraph>
+      </ContentWrapper>
+    </figcaption>
+    <div
+      class="care-layers_choices"
+      role="group"
+      aria-label="Explore the parts of whole-person care"
+    >
+      {layers.map((layer, i) => (
+        <Button
+          variant="choice"
+          emphasis="secondary"
+          class="text-style-small"
+          type="button"
+          data-choice={i}
+          data-detail={layer.detail}
+          aria-pressed="false"
+        >
+          {layer.label}
+        </Button>
+      ))}
+    </div>
+    <p class="care-layers_detail text text-style-small" aria-live="polite">
+      Together in a whole-person plan, according to individual needs.
+    </p>
+  </figure>
+)}
+<script>
+  import {
+    enterIllustration,
+    illustrationMotion,
+  } from "@/utils/illustrationMotion";
+  document
+    .querySelectorAll<HTMLElement>(".care-layers_wrap")
+    .forEach((figure) => {
+      const motion = illustrationMotion(figure);
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+      const branches = [...figure.querySelectorAll<SVGGElement>("[data-care]")];
+      const buttons = [
+        ...figure.querySelectorAll<HTMLButtonElement>("[data-choice]"),
+      ];
+      const detail = figure.querySelector<HTMLElement>(".care-layers_detail")!;
+      const defaultDetail = detail.textContent;
+      let selected: number | undefined;
+      let hovered: number | undefined;
+      let focused: number | undefined;
+      let current: number | undefined;
+      let trace: Animation | undefined;
+      const update = () => {
+        const next = hovered ?? focused ?? selected;
+        branches.forEach((branch, i) =>
+          branch.toggleAttribute("data-active", i === next),
+        );
+        buttons.forEach((button, i) => {
+          button.toggleAttribute("data-active", i === next);
+          button.setAttribute("aria-pressed", String(i === selected));
+        });
+        detail.textContent =
+          next === undefined ? defaultDetail : buttons[next].dataset.detail!;
+        if (next === current) return;
+        current = next;
+        trace?.cancel();
+        if (next !== undefined && !reduced.matches && focused === undefined) {
+          trace = branches[next]
+            .querySelector(".care-layers_route")!
+            .animate([{ strokeDashoffset: "100" }, { strokeDashoffset: "0" }], {
+              duration: motion.duration,
+              easing: motion.ease,
+            });
+        }
+      };
+      buttons.forEach((button, i) => {
+        [button, branches[i]].forEach((target) => {
+          target.addEventListener("pointerenter", (event) => {
+            if ((event as PointerEvent).pointerType === "mouse") {
+              hovered = i;
+              update();
+            }
+          });
+          target.addEventListener("pointerleave", () => {
+            hovered = undefined;
+            update();
+          });
+          target.addEventListener("click", () => {
+            selected = selected === i ? undefined : i;
+            update();
+          });
+        });
+        button.addEventListener("focus", () => {
+          if (button.matches(":focus-visible")) {
+            focused = i;
+            update();
+          }
+        });
+        button.addEventListener("blur", () => {
+          focused = undefined;
+          update();
+        });
+      });
+      figure.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          hovered = focused = selected = undefined;
+          update();
+        }
+      });
+      reduced.addEventListener("change", () => {
+        if (reduced.matches) trace?.cancel();
+      });
+      enterIllustration(figure, () =>
+        branches.map((branch, i) =>
+          branch
+            .querySelector(".care-layers_route")!
+            .animate([{ strokeDashoffset: "100" }, { strokeDashoffset: "0" }], {
+              duration: motion.duration,
+              delay: i * motion.stagger * 2,
+              easing: motion.ease,
+              fill: "backwards",
+            }),
+        ),
+      );
+    });
+</script>
+<style is:global>
+  @layer components {
+    .care-layers_wrap {
+      width: 100%;
+      max-width: var(--illustration-max-width);
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      & .care-layers_artboard {
+        container-type: inline-size;
+        aspect-ratio: 13 / 10;
+      }
+      & .care-layers_visual {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      & .care-layers_ground {
+        stroke: var(--accent-sky);
+        stroke-opacity: 0.2;
+      }
+      & .care-layers_branch {
+        cursor: pointer;
+      }
+      & .care-layers_route {
+        stroke: var(--accent-sky);
+        stroke-opacity: 0.5;
+        stroke-width: 2;
+        stroke-dasharray: 100 100;
+        stroke-linecap: round;
+      }
+      & .care-layers_surface {
+        fill: var(--background-2);
+        stroke: var(--border);
+        transition:
+          fill var(--illustration-duration) var(--illustration-ease),
+          stroke var(--illustration-duration) var(--illustration-ease);
+      }
+      & .care-layers_symbol {
+        stroke: var(--accent-sky);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      & .care-layers_body,
+      & .care-layers_head {
+        fill: var(--background-2);
+        stroke: var(--accent-sky);
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+      & .care-layers_heart {
+        fill: var(--accent-care);
+      }
+      & .care-layers_branch[data-active] {
+        & .care-layers_surface {
+          fill: var(--background-3);
+          stroke: var(--accent-sky);
+        }
+        & .care-layers_route {
+          stroke: var(--text);
+          stroke-opacity: 1;
+        }
+      }
+      & .care-layers_choices {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-2) var(--space-4);
+      }
+      & .care-layers_detail {
+        margin: 0;
+        text-align: center;
+        min-height: 3lh;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        & .care-layers_surface {
+          transition: none;
+        }
+      }
+    }
+  }
+</style>
